@@ -14,7 +14,6 @@ import ru.yandex.practicum.filmorate.model.validator.Update;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +27,6 @@ public class UserController {
 
     @PostMapping
     public User createUser(@RequestBody @Validated(Create.class) @NonNull User user) {
-        userValidationControl(user);
         user.setId(getNextNextId());
         ifNameEmptyFillWithLogin(user);
         users.put(user.getId(), user);
@@ -42,7 +40,6 @@ public class UserController {
             log.warn("Attempt to update user with unknown id={}:\n{}", user.getId(), user);
             throw new ValidationException("Пользователя с таким ID не зарегестрировано");
         }
-        userValidationControl(user);
         ifNameEmptyFillWithLogin(user);
         users.put(user.getId(), user);
         log.info("Updated user with id={}:\n{}", user.getId(), user);
@@ -66,25 +63,6 @@ public class UserController {
     private void ifNameEmptyFillWithLogin(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
-        }
-    }
-
-    private void userValidationControl(User user) {
-        if (user.getEmail().isBlank()) {
-            log.warn("Attempt to use User with empty email id={}:\n{}", user.getId(), user);
-            throw new ValidationException("E-mail не может быть пустым");
-        } else if (!user.getEmail().matches("([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\\.[a-zA-Z0-9_-]+)")) {
-            log.warn("Attempt to use User with incorrect email id={}:\n{}", user.getId(), user);
-            throw new ValidationException("Указан некорректный e-mail");
-        } else if (user.getLogin().isBlank()) {
-            log.warn("Attempt to use User with empty login id={}:\n{}", user.getId(), user);
-            throw new ValidationException("Логин не может быть пустым");
-        } else if (!user.getLogin().matches("^\\S+$")) {
-            log.warn("Attempt to use User login with spaces id={}:\n{}", user.getId(), user);
-            throw new ValidationException("Логин не может содержать пробелы");
-        } else if (user.getBirthday().isAfter(LocalDate.now())) {
-            log.warn("Attempt to use User with birthday in future id={}:\n{}", user.getId(), user);
-            throw new ValidationException("Дата рождения не может быть в будущем");
         }
     }
 }

@@ -40,7 +40,7 @@ public class UserControllerTests {
     private final String emptyLoginValidationViolation = "Пользователь с пустым email должен приводить к ошибке";
     private final String notCorrectLoginValidationViolation = "Пользователь с некорректным email должен приводить к ошибке";
     private final String nameUseLoginIfEmptyViolation = "Имя для отображения не равно логину";
-    private final String birthdayValidationViolation = "Пользователь с датой рожедния в будущем должен приводить к ошибке";
+    private final String birthdayValidationViolation = "Пользователь с датой рождения в будущем должен приводить к ошибке";
     private Validator validator;
 
 
