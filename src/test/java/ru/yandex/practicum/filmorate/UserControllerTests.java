@@ -1,15 +1,23 @@
 package ru.yandex.practicum.filmorate;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.validator.Create;
+import ru.yandex.practicum.filmorate.model.validator.Update;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UserControllerTests {
@@ -33,10 +41,13 @@ public class UserControllerTests {
     private final String notCorrectLoginValidationViolation = "Пользователь с некорректным email должен приводить к ошибке";
     private final String nameUseLoginIfEmptyViolation = "Имя для отображения не равно логину";
     private final String birthdayValidationViolation = "Пользователь с датой рожедния в будущем должен приводить к ошибке";
+    private Validator validator;
 
 
     @BeforeEach
     void beforeEach() {
+        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
         userController = new UserController();
         user = new User(null, "name@mail.ru", "login", "name",
                 LocalDate.of(2000, 10, 15));
@@ -61,31 +72,31 @@ public class UserControllerTests {
     }
 
     @Test
-    void createEmptyEmailUserThrowsException() {
+    void createEmptyEmailUserProvideError() {
         user.setEmail(emptyEmail);
-        assertThrows(ValidationException.class, () -> userController.createUser(user),
-                emptyEmailValidationViolation);
+        Set<ConstraintViolation<User>> violations = validator.validate(user, Create.class);
+        assertFalse(violations.isEmpty(), emptyEmailValidationViolation);
     }
 
     @Test
-    void createNotCorrectEmailUserThrowsException() {
+    void createNotCorrectEmailUserProvideError() {
         user.setEmail(notCorrectEmail);
-        assertThrows(ValidationException.class, () -> userController.createUser(user),
-                notCorrectEmailValidationViolation);
+        Set<ConstraintViolation<User>> violations = validator.validate(user, Create.class);
+        assertFalse(violations.isEmpty(), notCorrectEmailValidationViolation);
     }
 
     @Test
-    void createEmptyLoginUserThrowsException() {
+    void createEmptyLoginUserProvideError() {
         user.setLogin(emptyLogin);
-        assertThrows(ValidationException.class, () -> userController.createUser(user),
-                emptyLoginValidationViolation);
+        Set<ConstraintViolation<User>> violations = validator.validate(user, Create.class);
+        assertFalse(violations.isEmpty(), emptyLoginValidationViolation);
     }
 
     @Test
-    void createNotCorrectLoginUserThrowsException() {
+    void createNotCorrectLoginUserProvideError() {
         user.setLogin(notCorrectLogin);
-        assertThrows(ValidationException.class, () -> userController.createUser(user),
-                notCorrectLoginValidationViolation);
+        Set<ConstraintViolation<User>> violations = validator.validate(user, Create.class);
+        assertFalse(violations.isEmpty(), notCorrectLoginValidationViolation);
     }
 
     @Test
@@ -99,10 +110,10 @@ public class UserControllerTests {
     }
 
     @Test
-    void createNotCorrectBirthdayUserThrowsException() {
+    void createNotCorrectBirthdayUserProvideError() {
         user.setBirthday(notCorrectBirthday);
-        assertThrows(ValidationException.class, () -> userController.createUser(user),
-                birthdayValidationViolation);
+        Set<ConstraintViolation<User>> violations = validator.validate(user, Create.class);
+        assertFalse(violations.isEmpty(), birthdayValidationViolation);
     }
 
     @Test
@@ -124,35 +135,31 @@ public class UserControllerTests {
     }
 
     @Test
-    void updateEmptyEmailUserThrowsException() {
-        userController.createUser(user);
+    void updateEmptyEmailUserProvideError() {
         updatedUser.setEmail(emptyEmail);
-        assertThrows(ValidationException.class, () -> userController.updateUser(updatedUser),
-                emptyEmailValidationViolation);
+        Set<ConstraintViolation<User>> violations = validator.validate(updatedUser, Update.class);
+        assertFalse(violations.isEmpty(), emptyEmailValidationViolation);
     }
 
     @Test
-    void updateNotCorrectEmailUserThrowsException() {
-        userController.createUser(user);
+    void updateNotCorrectEmailUserProvideError() {
         updatedUser.setEmail(notCorrectEmail);
-        assertThrows(ValidationException.class, () -> userController.updateUser(updatedUser),
-                notCorrectEmailValidationViolation);
+        Set<ConstraintViolation<User>> violations = validator.validate(updatedUser, Update.class);
+        assertFalse(violations.isEmpty(), notCorrectEmailValidationViolation);
     }
 
     @Test
-    void updateEmptyLoginUserThrowsException() {
-        userController.createUser(user);
+    void updateEmptyLoginUserProvideError() {
         updatedUser.setLogin(emptyLogin);
-        assertThrows(ValidationException.class, () -> userController.updateUser(updatedUser),
-                emptyLoginValidationViolation);
+        Set<ConstraintViolation<User>> violations = validator.validate(updatedUser, Update.class);
+        assertFalse(violations.isEmpty(), emptyLoginValidationViolation);
     }
 
     @Test
-    void updateNotCorrectLoginUserThrowsException() {
-        userController.createUser(user);
+    void updateNotCorrectLoginUserProvideError() {
         updatedUser.setLogin(notCorrectLogin);
-        assertThrows(ValidationException.class, () -> userController.updateUser(updatedUser),
-                notCorrectLoginValidationViolation);
+        Set<ConstraintViolation<User>> violations = validator.validate(updatedUser, Update.class);
+        assertFalse(violations.isEmpty(), notCorrectLoginValidationViolation);
     }
 
     @Test
@@ -167,11 +174,10 @@ public class UserControllerTests {
     }
 
     @Test
-    void updateNotCorrectBirthdayUserThrowsException() {
-        userController.createUser(user);
+    void updateNotCorrectBirthdayUserProvideError() {
         updatedUser.setBirthday(notCorrectBirthday);
-        assertThrows(ValidationException.class, () -> userController.updateUser(updatedUser),
-                birthdayValidationViolation);
+        Set<ConstraintViolation<User>> violations = validator.validate(updatedUser, Update.class);
+        assertFalse(violations.isEmpty(), birthdayValidationViolation);
     }
 
     @Test
