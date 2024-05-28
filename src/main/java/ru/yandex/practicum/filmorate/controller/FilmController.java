@@ -24,10 +24,11 @@ import java.util.Map;
 @Slf4j
 public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
+    private int lastFilmId;
 
     @PostMapping
     public Film addFilm(@RequestBody @Validated(Create.class) @NonNull Film film) {
-        film.setId(getNextFilmId());
+        film.setId(++lastFilmId);
         films.put(film.getId(), film);
         log.info("Created film with id={}:\n{}", film.getId(), film);
         return film;
@@ -47,14 +48,5 @@ public class FilmController {
     @GetMapping
     public List<Film> getAllFilms() {
         return new ArrayList<>(films.values());
-    }
-
-    private Integer getNextFilmId() {
-        int currentMaxId = films.keySet()
-                .stream()
-                .mapToInt(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
     }
 }

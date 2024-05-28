@@ -24,10 +24,11 @@ import java.util.Map;
 @Slf4j
 public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
+    private int lastUserId;
 
     @PostMapping
     public User createUser(@RequestBody @Validated(Create.class) @NonNull User user) {
-        user.setId(getNextNextId());
+        user.setId(++lastUserId);
         ifNameEmptyFillWithLogin(user);
         users.put(user.getId(), user);
         log.info("Created user with id={}:\n{}", user.getId(), user);
@@ -49,15 +50,6 @@ public class UserController {
     @GetMapping
     public List<User> getAllUsers() {
         return new ArrayList<>(users.values());
-    }
-
-    private Integer getNextNextId() {
-        int currentMaxId = users.keySet()
-                .stream()
-                .mapToInt(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
     }
 
     private void ifNameEmptyFillWithLogin(User user) {
