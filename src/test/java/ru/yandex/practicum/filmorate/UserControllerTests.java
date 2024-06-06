@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.validator.Create;
 import ru.yandex.practicum.filmorate.model.validator.Update;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -48,7 +49,7 @@ public class UserControllerTests {
     void beforeEach() {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
-        userController = new UserController();
+        userController = new UserController(new InMemoryUserStorage());
         user = new User(null, "name@mail.ru", "login", "name",
                 LocalDate.of(2000, 10, 15));
         updatedUser = new User(1, "organization@mail.ru", "newLogin", "Surname",
