@@ -12,4 +12,6 @@ public interface UserService {
     List<User> getAllUsers();
 
     User addFriend(Integer userId, Integer friendId);
+
+    User deleteFriend(Integer userId, Integer friendId);
 }

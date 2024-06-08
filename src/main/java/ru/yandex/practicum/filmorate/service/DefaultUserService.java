@@ -48,7 +48,18 @@ public class DefaultUserService implements UserService {
         User friend = getUserById(friendId);
         user.getFriendsId().add(friendId);
         friend.getFriendsId().add(userId);
+        log.info(String.format("Users with id=%d and id=%s become friends", userId, friendId));
         return user;
+    }
+
+    @Override
+    public User deleteFriend(Integer userId, Integer friendId) {
+        User user = getUserById(userId);
+        User friend = getUserById(friendId);
+        user.getFriendsId().remove(friendId);
+        friend.getFriendsId().remove(userId);
+        log.info(String.format("Users with id=%d and id=%s no longer friends", userId, friendId));
+        return null;
     }
 
     private void ifNameEmptyFillWithLogin(User user) {
@@ -60,6 +71,7 @@ public class DefaultUserService implements UserService {
     private User getUserById (Integer id) {
         User user = userStorage.getUserById(id);
         if (user == null) {
+            log.warn(String.format("Requested non existed User with id=%d", id));
             throw new UserNotFoundException(id);
         } else return user;
     }
