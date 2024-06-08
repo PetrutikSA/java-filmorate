@@ -62,6 +62,14 @@ public class DefaultUserService implements UserService {
         return null;
     }
 
+    @Override
+    public List<User> getFriendsList(Integer userId) {
+        User user = getUserById(userId);
+        return user.getFriendsId().stream()
+                .map(id -> getUserById(userId))
+                .toList();
+    }
+
     private void ifNameEmptyFillWithLogin(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
