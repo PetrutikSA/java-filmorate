@@ -8,17 +8,14 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class DefaultUserService implements UserService {
-    /* Добавление в друзья,
-    удаление из друзей,
-    вывод списка общих друзей.
-    То есть если Лена стала другом Саши, то это значит, что Саша теперь друг Лены.
-     */
     private final UserStorage userStorage;
 
     @Override
@@ -66,7 +63,18 @@ public class DefaultUserService implements UserService {
     public List<User> getFriendsList(Integer userId) {
         User user = getUserById(userId);
         return user.getFriendsId().stream()
-                .map(id -> getUserById(userId))
+                .map(this::getUserById)
+                .toList();
+    }
+
+    @Override
+    public List<User> getCommonFriendListWithOtherUser(Integer userId, Integer otherUserId) {
+        User user = getUserById(userId);
+        User otherUser = getUserById(otherUserId);
+        Set<Integer> userFriendsList = new HashSet<>(user.getFriendsId());
+        userFriendsList.retainAll(otherUser.getFriendsId());
+        return userFriendsList.stream()
+                .map(this::getUserById)
                 .toList();
     }
 

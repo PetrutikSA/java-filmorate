@@ -55,4 +55,10 @@ public class UserController {
     public List<User> getFriendsList(@PathVariable Integer userId) {
         return userService.getFriendsList(userId);
     }
+
+    @GetMapping("GET /users/{userId}/friends/common/{otherUserId}")
+    public List<User> getCommonFriendListWithOtherUser (
+            @PathVariable Integer userId, @PathVariable Integer otherUserId) {
+        return userService.getCommonFriendListWithOtherUser(userId, otherUserId);
+    }
 }
