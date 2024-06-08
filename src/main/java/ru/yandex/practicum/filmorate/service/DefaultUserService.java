@@ -1,7 +1,10 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -9,6 +12,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DefaultUserService implements UserService {
     /* Добавление в друзья,
     удаление из друзей,
@@ -25,6 +29,10 @@ public class DefaultUserService implements UserService {
 
     @Override
     public User updateUser(User user) {
+        if (userStorage.getUserById(user.getId()) == null) {
+            log.warn("Attempt to update user with unknown id={}:\n{}", user.getId(), user);
+            throw new ValidationException("Пользователя с таким ID не зарегистрировано");
+        }
         ifNameEmptyFillWithLogin(user);
         return userStorage.updateUser(user);
     }
@@ -35,13 +43,24 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public User addFriend(Long userId, Long friendId) {
-        return null;
+    public User addFriend(Integer userId, Integer friendId) {
+        User user = getUserById(userId);
+        User friend = getUserById(friendId);
+        user.getFriendsId().add(friendId);
+        friend.getFriendsId().add(userId);
+        return user;
     }
 
     private void ifNameEmptyFillWithLogin(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
+    }
+
+    private User getUserById (Integer id) {
+        User user = userStorage.getUserById(id);
+        if (user == null) {
+            throw new UserNotFoundException(id);
+        } else return user;
     }
 }

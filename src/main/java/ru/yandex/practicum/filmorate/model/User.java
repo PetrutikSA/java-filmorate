@@ -29,6 +29,6 @@ public class User {
     private String name;
     @Past(groups = {Create.class, Update.class}, message = "Дата рождения не может быть в будущем")
     private LocalDate birthday;
-    private Set<User> friends;
+    private Set<Integer> friendsId;
 }
 

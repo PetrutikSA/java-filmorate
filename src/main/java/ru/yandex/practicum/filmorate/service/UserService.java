@@ -11,5 +11,5 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    User addFriend(Long userId, Long friendId);
+    User addFriend(Integer userId, Integer friendId);
 }
