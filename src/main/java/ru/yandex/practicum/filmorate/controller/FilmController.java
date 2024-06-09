@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.validator.Create;
 import ru.yandex.practicum.filmorate.model.validator.Update;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.List;
 
@@ -20,20 +20,20 @@ import java.util.List;
 @RequestMapping("/films")
 @RequiredArgsConstructor
 public class FilmController {
-    private final FilmStorage filmStorage;
+    private final FilmService filmService;
 
     @PostMapping
     public Film addFilm(@RequestBody @Validated(Create.class) @NonNull Film film) {
-        return filmStorage.addFilm(film);
+        return filmService.addFilm(film);
     }
 
     @PutMapping
     public Film updateFilm(@RequestBody @Validated(Update.class) @NonNull Film film) {
-        return filmStorage.updateFilm(film);
+        return filmService.updateFilm(film);
     }
 
     @GetMapping
     public List<Film> getAllFilms() {
-        return filmStorage.getAllFilms();
+        return filmService.getAllFilms();
     }
 }

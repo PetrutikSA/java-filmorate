@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.validator.Create;
 import ru.yandex.practicum.filmorate.model.validator.Update;
+import ru.yandex.practicum.filmorate.service.DefaultFilmService;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 import java.time.Duration;
@@ -47,7 +48,7 @@ public class FilmControllerTests {
     void beforeEach() {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
-        filmController = new FilmController(new InMemoryFilmStorage());
+        filmController = new FilmController(new DefaultFilmService(new InMemoryFilmStorage()));
         film = new Film(null, "name1", "Description1",
                 LocalDate.of(2000, 10, 15), Duration.ofMinutes(120));
         updatedFilm = new Film(1, "updatedName", "UpdatedDescription",
