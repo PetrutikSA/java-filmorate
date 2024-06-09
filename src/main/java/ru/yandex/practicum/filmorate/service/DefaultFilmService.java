@@ -59,8 +59,7 @@ public class DefaultFilmService implements FilmService{
     public Film checkAndGetFilmById(Integer id) {
         Film film = filmStorage.getFilmById(id);
         if (film == null) {
-            log.warn(String.format("Requested non existed Film with id=%d", id));
-            throw new FilmNotFoundException(String.format("Фильма с ID=%d не зарегистрировано", id), id);
+            throw new FilmNotFoundException(id);
         } else return film;
     }
 }

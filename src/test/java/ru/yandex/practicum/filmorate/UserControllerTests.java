@@ -7,7 +7,7 @@ import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.UserController;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.validator.Create;
 import ru.yandex.practicum.filmorate.model.validator.Update;
@@ -123,7 +123,7 @@ public class UserControllerTests {
     void updateUserWithoutIdThrowsException() {
         userController.createUser(user);
         updatedUser.setId(null);
-        assertThrows(ValidationException.class, () -> userController.updateUser(updatedUser),
+        assertThrows(UserNotFoundException.class, () -> userController.updateUser(updatedUser),
                 "Обновление пользователя без ID должно приводить к ошибке");
     }
 

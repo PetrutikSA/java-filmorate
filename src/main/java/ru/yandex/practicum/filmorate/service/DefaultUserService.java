@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -26,10 +25,7 @@ public class DefaultUserService implements UserService {
 
     @Override
     public User updateUser(User user) {
-        if (userStorage.getUserById(user.getId()) == null) {
-            log.warn("Attempt to update user with unknown id={}:\n{}", user.getId(), user);
-            throw new ValidationException("Пользователя с таким ID не зарегистрировано");
-        }
+        checkAndGetUserById(user.getId());
         ifNameEmptyFillWithLogin(user);
         return userStorage.updateUser(user);
     }
@@ -87,7 +83,6 @@ public class DefaultUserService implements UserService {
     public User checkAndGetUserById(Integer id) {
         User user = userStorage.getUserById(id);
         if (user == null) {
-            log.warn(String.format("Requested non existed User with id=%d", id));
             throw new UserNotFoundException(id);
         } else return user;
     }
