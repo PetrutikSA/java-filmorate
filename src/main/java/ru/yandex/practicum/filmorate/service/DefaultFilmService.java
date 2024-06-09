@@ -8,21 +8,24 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class DefaultFilmService implements FilmService{
+public class DefaultFilmService implements FilmService {
     private final FilmStorage filmStorage;
     private final UserService userService;
 
     public Film addFilm(Film film) {
+        ifUsersLikesSetNullInitialize(film);
         return filmStorage.addFilm(film);
     }
 
     public Film updateFilm(Film film) {
         checkAndGetFilmById(film.getId());
+        ifUsersLikesSetNullInitialize(film);
         return filmStorage.updateFilm(film);
     }
 
@@ -61,5 +64,11 @@ public class DefaultFilmService implements FilmService{
         if (film == null) {
             throw new FilmNotFoundException(id);
         } else return film;
+    }
+
+    private void ifUsersLikesSetNullInitialize (Film film) {
+        if (film.getUsersIdPostedLikes() == null) {
+            film.setUsersIdPostedLikes(new HashSet<>());
+        }
     }
 }

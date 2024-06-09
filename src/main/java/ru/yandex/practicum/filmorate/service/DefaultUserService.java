@@ -20,6 +20,7 @@ public class DefaultUserService implements UserService {
     @Override
     public User createUser(User user) {
         ifNameEmptyFillWithLogin(user);
+        ifFriendsSetNullInitialize(user);
         return userStorage.createUser(user);
     }
 
@@ -27,6 +28,7 @@ public class DefaultUserService implements UserService {
     public User updateUser(User user) {
         checkAndGetUserById(user.getId());
         ifNameEmptyFillWithLogin(user);
+        ifFriendsSetNullInitialize(user);
         return userStorage.updateUser(user);
     }
 
@@ -77,6 +79,12 @@ public class DefaultUserService implements UserService {
     private void ifNameEmptyFillWithLogin(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
+        }
+    }
+
+    private void ifFriendsSetNullInitialize(User user) {
+        if (user.getFriendsId() == null) {
+            user.setFriendsId(new HashSet<>());
         }
     }
 
