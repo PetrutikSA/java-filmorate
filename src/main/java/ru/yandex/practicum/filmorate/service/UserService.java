@@ -18,4 +18,6 @@ public interface UserService {
     List<User> getFriendsList(Integer userId);
 
     List<User> getCommonFriendListWithOtherUser (Integer userId, Integer otherUserId);
+
+    User checkAndGetUserById(Integer id);
 }

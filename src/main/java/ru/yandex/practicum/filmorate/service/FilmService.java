@@ -10,4 +10,12 @@ public interface FilmService {
     Film updateFilm(Film film);
 
     List<Film> getAllFilms();
+
+    Film userPostLikeToFilm(Integer filmId, Integer userId);
+
+    Film userDeleteLikeToFilm(Integer filmId, Integer userId);
+
+    List<Film> getTopLikedFilms(Integer count);
+
+    Film checkAndGetFilmById(Integer id);
 }

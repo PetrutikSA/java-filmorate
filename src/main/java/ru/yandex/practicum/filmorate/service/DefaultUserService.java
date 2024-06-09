@@ -41,8 +41,8 @@ public class DefaultUserService implements UserService {
 
     @Override
     public User addFriend(Integer userId, Integer friendId) {
-        User user = getUserById(userId);
-        User friend = getUserById(friendId);
+        User user = checkAndGetUserById(userId);
+        User friend = checkAndGetUserById(friendId);
         user.getFriendsId().add(friendId);
         friend.getFriendsId().add(userId);
         log.info(String.format("Users with id=%d and id=%s become friends", userId, friendId));
@@ -51,8 +51,8 @@ public class DefaultUserService implements UserService {
 
     @Override
     public User deleteFriend(Integer userId, Integer friendId) {
-        User user = getUserById(userId);
-        User friend = getUserById(friendId);
+        User user = checkAndGetUserById(userId);
+        User friend = checkAndGetUserById(friendId);
         user.getFriendsId().remove(friendId);
         friend.getFriendsId().remove(userId);
         log.info(String.format("Users with id=%d and id=%s no longer friends", userId, friendId));
@@ -61,20 +61,20 @@ public class DefaultUserService implements UserService {
 
     @Override
     public List<User> getFriendsList(Integer userId) {
-        User user = getUserById(userId);
+        User user = checkAndGetUserById(userId);
         return user.getFriendsId().stream()
-                .map(this::getUserById)
+                .map(this::checkAndGetUserById)
                 .toList();
     }
 
     @Override
     public List<User> getCommonFriendListWithOtherUser(Integer userId, Integer otherUserId) {
-        User user = getUserById(userId);
-        User otherUser = getUserById(otherUserId);
+        User user = checkAndGetUserById(userId);
+        User otherUser = checkAndGetUserById(otherUserId);
         Set<Integer> userFriendsList = new HashSet<>(user.getFriendsId());
         userFriendsList.retainAll(otherUser.getFriendsId());
         return userFriendsList.stream()
-                .map(this::getUserById)
+                .map(this::checkAndGetUserById)
                 .toList();
     }
 
@@ -84,7 +84,7 @@ public class DefaultUserService implements UserService {
         }
     }
 
-    private User getUserById (Integer id) {
+    public User checkAndGetUserById(Integer id) {
         User user = userStorage.getUserById(id);
         if (user == null) {
             log.warn(String.format("Requested non existed User with id=%d", id));

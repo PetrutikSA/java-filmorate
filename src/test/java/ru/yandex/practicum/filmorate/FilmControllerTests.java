@@ -7,15 +7,18 @@ import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.validator.Create;
 import ru.yandex.practicum.filmorate.model.validator.Update;
 import ru.yandex.practicum.filmorate.service.DefaultFilmService;
+import ru.yandex.practicum.filmorate.service.DefaultUserService;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -48,11 +51,12 @@ public class FilmControllerTests {
     void beforeEach() {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
-        filmController = new FilmController(new DefaultFilmService(new InMemoryFilmStorage()));
+        filmController = new FilmController(new DefaultFilmService(new InMemoryFilmStorage(),
+                new DefaultUserService(new InMemoryUserStorage())));
         film = new Film(null, "name1", "Description1",
-                LocalDate.of(2000, 10, 15), Duration.ofMinutes(120));
+                LocalDate.of(2000, 10, 15), Duration.ofMinutes(120), new HashSet<>());
         updatedFilm = new Film(1, "updatedName", "UpdatedDescription",
-                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180));
+                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new HashSet<>());
     }
 
     @Test
@@ -105,7 +109,7 @@ public class FilmControllerTests {
     void updateFilmWithoutIdThrowsException() {
         filmController.addFilm(film);
         updatedFilm.setId(null);
-        assertThrows(ValidationException.class, () -> filmController.updateFilm(updatedFilm),
+        assertThrows(FilmNotFoundException.class, () -> filmController.updateFilm(updatedFilm),
                 "Обновление фильма без ID должно приводить к ошибке");
     }
 
@@ -155,7 +159,7 @@ public class FilmControllerTests {
     void correctReturnAllFilms() {
         filmController.addFilm(film);
         Film film2 = new Film(null, "name2", "description2",
-                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180));
+                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new HashSet<>());
         filmController.addFilm(film2);
         List<Film> filmList = filmController.getAllFilms();
         assertEquals(2, filmList.size(), returnFilmsListNotCorrectSize);

@@ -17,6 +17,7 @@ import ru.yandex.practicum.filmorate.model.validator.Update;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -37,4 +38,5 @@ public class Film {
     @JsonSerialize(using = JsonDurationSerializer.class)
     @JsonDeserialize(using = JsonDurationDeserializer.class)
     private Duration duration;
+    private Set<Integer> usersIdPostedLikes;
 }
