@@ -37,7 +37,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleRuntimeException(Exception exception) {
-        log.warn(String.format("Unexpected exception: %s", exception));
+        log.warn("Unexpected exception", exception);
         return new ErrorResponse("Произошла непредвиденная ошибка");
     }
 }
