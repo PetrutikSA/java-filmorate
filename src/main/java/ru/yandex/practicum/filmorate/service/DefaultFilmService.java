@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -54,7 +53,8 @@ public class DefaultFilmService implements FilmService {
     @Override
     public List<Film> getTopLikedFilms(Integer count) {
         return filmStorage.getAllFilms().stream()
-                .sorted(Comparator.comparingInt(film -> film.getUsersIdPostedLikes().size()))
+                .sorted((film1, film2) ->
+                        Integer.compare(film2.getUsersIdPostedLikes().size(), film1.getUsersIdPostedLikes().size()))
                 .limit(count)
                 .toList();
     }
