@@ -66,7 +66,7 @@ public class DefaultFilmService implements FilmService {
         } else return film;
     }
 
-    private void ifUsersLikesSetNullInitialize (Film film) {
+    private void ifUsersLikesSetNullInitialize(Film film) {
         if (film.getUsersIdPostedLikes() == null) {
             film.setUsersIdPostedLikes(new HashSet<>());
         }
