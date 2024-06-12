@@ -37,7 +37,7 @@ public class DefaultFilmService implements FilmService {
         Film film = checkAndGetFilmById(filmId);
         userService.checkAndGetUserById(userId);
         film.getUsersIdPostedLikes().add(userId);
-        log.info(String.format("Users with id=%d liked film with id=%d", userId, filmId));
+        log.info("Users with id={} liked film with id={}", userId, filmId);
         return film;
     }
 
@@ -46,7 +46,7 @@ public class DefaultFilmService implements FilmService {
         Film film = checkAndGetFilmById(filmId);
         userService.checkAndGetUserById(userId);
         film.getUsersIdPostedLikes().remove(userId);
-        log.info(String.format("Users with id=%d unliked film with id=%d", userId, filmId));
+        log.info("Users with id={} unliked film with id={}", userId, filmId);
         return film;
     }
 

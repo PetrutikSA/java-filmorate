@@ -16,21 +16,21 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(MethodArgumentNotValidException exception) {
-        log.warn(String.format("Validation exception: %s", exception.getMessage()));
+        log.warn("Validation exception: {}", exception.getMessage());
         return new ErrorResponse(exception.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleUserNotFoundException(UserNotFoundException exception) {
-        log.warn(String.format("Requested non existed User with id=%d", exception.getUserId()));
+        log.warn("Requested non existed User with id={}", exception.getUserId());
         return new ErrorResponse(String.format("Пользователя с ID=%d не зарегистрировано", exception.getUserId()));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleFilmNotFoundException(FilmNotFoundException exception) {
-        log.warn(String.format("Requested non existed Film with id=%d", exception.getFilmId()));
+        log.warn("Requested non existed Film with id={}", exception.getFilmId());
         return new ErrorResponse(String.format("Фильма с ID=%d не зарегистрировано", exception.getFilmId()));
     }
 

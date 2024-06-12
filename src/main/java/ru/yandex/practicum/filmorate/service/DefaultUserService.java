@@ -43,7 +43,7 @@ public class DefaultUserService implements UserService {
         User friend = checkAndGetUserById(friendId);
         user.getFriendsId().add(friendId);
         friend.getFriendsId().add(userId);
-        log.info(String.format("Users with id=%d and id=%s become friends", userId, friendId));
+        log.info("Users with id={} and id={} become friends", userId, friendId);
         return user;
     }
 
@@ -53,7 +53,7 @@ public class DefaultUserService implements UserService {
         User friend = checkAndGetUserById(friendId);
         user.getFriendsId().remove(friendId);
         friend.getFriendsId().remove(userId);
-        log.info(String.format("Users with id=%d and id=%s no longer friends", userId, friendId));
+        log.info("Users with id={} and id={} no longer friends", userId, friendId);
         return null;
     }
 
