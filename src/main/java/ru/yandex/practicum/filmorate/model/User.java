@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorate.model.validator.Create;
 import ru.yandex.practicum.filmorate.model.validator.Update;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -28,5 +29,6 @@ public class User {
     private String name;
     @Past(groups = {Create.class, Update.class}, message = "Дата рождения не может быть в будущем")
     private LocalDate birthday;
+    private Set<Integer> friendsId;
 }
 
