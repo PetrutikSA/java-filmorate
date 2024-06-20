@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.time.DurationMin;
 import ru.yandex.practicum.filmorate.model.adapter.JsonDurationDeserializer;
 import ru.yandex.practicum.filmorate.model.adapter.JsonDurationSerializer;
+import ru.yandex.practicum.filmorate.model.enums.Genre;
+import ru.yandex.practicum.filmorate.model.enums.Rating;
 import ru.yandex.practicum.filmorate.model.validator.annotation.After;
 import ru.yandex.practicum.filmorate.model.validator.Create;
 import ru.yandex.practicum.filmorate.model.validator.Update;
@@ -39,4 +41,6 @@ public class Film {
     @JsonDeserialize(using = JsonDurationDeserializer.class)
     private Duration duration;
     private Set<Integer> usersIdPostedLikes;
+    private Genre genre;
+    private Rating rating;
 }
