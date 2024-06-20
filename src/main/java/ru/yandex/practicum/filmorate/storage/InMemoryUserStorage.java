@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +18,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User createUser(User user) {
         user.setId(++lastUserId);
-        user.setFriendsId(new HashSet<>());
+        user.setFriendsId(new HashMap<>());
         users.put(user.getId(), user);
         log.info("Created user with id={}:\n{}", user.getId(), user);
         return user;

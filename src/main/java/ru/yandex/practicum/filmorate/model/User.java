@@ -8,11 +8,12 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.yandex.practicum.filmorate.model.enums.FriendshipStatus;
 import ru.yandex.practicum.filmorate.model.validator.Create;
 import ru.yandex.practicum.filmorate.model.validator.Update;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -29,6 +30,6 @@ public class User {
     private String name;
     @Past(groups = {Create.class, Update.class}, message = "Дата рождения не может быть в будущем")
     private LocalDate birthday;
-    private Set<Integer> friendsId;
+    private Map<Integer, FriendshipStatus> friendsId;
 }
 
