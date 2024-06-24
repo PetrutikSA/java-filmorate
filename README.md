@@ -1,2 +1,5 @@
 # java-filmorate
-Template repository for Filmorate project.
+Filmorate project.
+
+## DB structure:
+![Image](/home/stanislav/IdeaProjects/java-filmorate/src/main/resources/DBDiagram.png)
