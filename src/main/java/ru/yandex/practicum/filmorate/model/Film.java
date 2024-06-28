@@ -42,5 +42,5 @@ public class Film {
     private Duration duration;
     private Set<Integer> usersIdPostedLikes;
     private Genre genre;
-    private Rating rating;
+    private Set<Rating> rating;
 }

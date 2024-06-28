@@ -16,7 +16,6 @@
   * description — описание фильма; 
   * release_date — дата выхода фильма.
   * duration — продолжительность фильма (храниться в минутах)
-  * внешний ключ genre_id (ссылается на таблицу genre) — идентификатор жанра.
   * внешний ключ rating_id (ссылается на таблицу rating) — идентификатор рейтинга.
 
 
@@ -26,6 +25,14 @@
 
 * первичный ключ genre_id — идентификатор жанра;
 * name — наименование жанра;
+
+**films_genres**  
+Содержит список всех жанров для всех фильмов.  
+Таблица включает такие поля:
+
+* первичный ключ films_genres_id - суррогатный ключ
+* внешний ключ genre_id (ссылается на таблицу genre) — идентификатор жанра.
+* первичный ключ genre_id — идентификатор жанра;
 
 **rating**  
 Содержит список возможных рейтингов фильмов.  
@@ -85,7 +92,6 @@
     SELECT *
     FROM films
     WHERE film_id = {id}
-    LEFT JOIN genre ON genre.genre_id = films.genre_id
     LEFT JOIN rating ON rating.rating_id = films.rating_id
 
 Список пользователей лайкнувших фильм:
@@ -94,12 +100,18 @@
     FROM films_likes
     WHERE film_id = {id}
 
+Список жанров для фильма:
+
+    SELECT genre.name
+    FROM films_genres
+    WHERE film_id = {id}
+    LEFT JOIN genre ON genre.genre_id = films_genres.genre_id
+
 ### *getAllFilms()*
-Получение всех фильмов должно пройти в 3 этапа  
+Получение всех фильмов должно пройти в 5 этапов  
 
     SELECT *
     FROM films
-    LEFT JOIN genre ON genre.genre_id = films.genre_id
     LEFT JOIN rating ON rating.rating_id = films.rating_id
 
 Получение списка фильмов у которых есть лайки
@@ -112,6 +124,19 @@
     SELECT user_id
     FROM films_likes
     WHERE film_id = {current_id}
+
+Получение списка фильмов у которых указан жанр(-ы)
+
+    SELECT DISTINCT film_id
+    FROM films_genres
+
+По каждому фильму из списка фильмов с жанрами выгрузить все его жанры:
+
+    SELECT genre.name
+    FROM films_genres
+    WHERE film_id = {current_id}
+    LEFT JOIN genre ON genre.genre_id = films_genres.genre_id
+
 ----
 Интерфейс UserStorage предусматривает 2 метода получения данных:
 
