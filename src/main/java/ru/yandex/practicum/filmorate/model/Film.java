@@ -41,6 +41,6 @@ public class Film {
     @JsonDeserialize(using = JsonDurationDeserializer.class)
     private Duration duration;
     private Set<Integer> usersIdPostedLikes;
-    private Genre genre;
-    private Set<Rating> rating;
+    private Set<Genre> genre;
+    private Rating rating;
 }

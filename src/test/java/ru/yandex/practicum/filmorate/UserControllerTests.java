@@ -15,7 +15,7 @@ import ru.yandex.practicum.filmorate.service.DefaultUserService;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -53,9 +53,9 @@ public class UserControllerTests {
         validator = validatorFactory.getValidator();
         userController = new UserController(new DefaultUserService(new InMemoryUserStorage()));
         user = new User(null, "name@mail.ru", "login", "name",
-                LocalDate.of(2000, 10, 15), new HashSet<>());
+                LocalDate.of(2000, 10, 15), new HashMap<>());
         updatedUser = new User(1, "organization@mail.ru", "newLogin", "Surname",
-                LocalDate.of(1989, 7, 27), new HashSet<>());
+                LocalDate.of(1989, 7, 27), new HashMap<>());
     }
 
     @Test
@@ -187,7 +187,7 @@ public class UserControllerTests {
     void correctReturnAllUsers() {
         userController.createUser(user);
         User user2 = new User(null, "organization@mail.ru", "newLogin", "Surname",
-                LocalDate.of(1989, 7, 27), new HashSet<>());
+                LocalDate.of(1989, 7, 27), new HashMap<>());
         userController.createUser(user2);
         List<User> userList = userController.getAllUsers();
         assertEquals(2, userList.size(), returnUserListNotCorrectSize);

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.enums.Rating;
 import ru.yandex.practicum.filmorate.model.validator.Create;
 import ru.yandex.practicum.filmorate.model.validator.Update;
 import ru.yandex.practicum.filmorate.service.DefaultFilmService;
@@ -54,9 +55,9 @@ public class FilmControllerTests {
         filmController = new FilmController(new DefaultFilmService(new InMemoryFilmStorage(),
                 new DefaultUserService(new InMemoryUserStorage())));
         film = new Film(null, "name1", "Description1",
-                LocalDate.of(2000, 10, 15), Duration.ofMinutes(120), new HashSet<>());
+                LocalDate.of(2000, 10, 15), Duration.ofMinutes(120), new HashSet<>(), new HashSet<>(), Rating.PG);
         updatedFilm = new Film(1, "updatedName", "UpdatedDescription",
-                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new HashSet<>());
+                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new HashSet<>(), new HashSet<>(), Rating.PG);
     }
 
     @Test
@@ -159,7 +160,7 @@ public class FilmControllerTests {
     void correctReturnAllFilms() {
         filmController.addFilm(film);
         Film film2 = new Film(null, "name2", "description2",
-                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new HashSet<>());
+                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new HashSet<>(), new HashSet<>(), Rating.PG);
         filmController.addFilm(film2);
         List<Film> filmList = filmController.getAllFilms();
         assertEquals(2, filmList.size(), returnFilmsListNotCorrectSize);
