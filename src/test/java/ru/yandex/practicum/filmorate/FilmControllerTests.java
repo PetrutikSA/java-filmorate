@@ -14,8 +14,8 @@ import ru.yandex.practicum.filmorate.model.validator.Create;
 import ru.yandex.practicum.filmorate.model.validator.Update;
 import ru.yandex.practicum.filmorate.service.DefaultFilmService;
 import ru.yandex.practicum.filmorate.service.DefaultUserService;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.inmemorry.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.inmemorry.InMemoryUserStorage;
 
 import java.time.Duration;
 import java.time.LocalDate;
