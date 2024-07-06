@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.model.enums.FriendshipStatus;
@@ -16,7 +17,8 @@ import java.time.LocalDate;
 import java.util.Map;
 
 @Data
-@AllArgsConstructor
+@Builder
+@AllArgsConstructor //TODO: убрать конструкторы если не нужно
 @NoArgsConstructor
 public class User {
     @Min(value = 1, groups = {Update.class}, message = "ID долно быть положжительным числом")

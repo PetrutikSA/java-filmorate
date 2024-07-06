@@ -30,7 +30,8 @@
 Содержит список всех жанров для всех фильмов.  
 Таблица включает такие поля:
 
-* первичный ключ films_genres_id - суррогатный ключ
+* первичный ключ films_ge  private final JdbcTemplate jdbc;
+    private final UserRowMapper mapper;nres_id - суррогатный ключ
 * внешний ключ genre_id (ссылается на таблицу genre) — идентификатор жанра.
 * первичный ключ genre_id — идентификатор жанра;
 

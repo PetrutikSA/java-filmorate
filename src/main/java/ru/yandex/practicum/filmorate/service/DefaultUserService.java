@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.model.enums.FriendshipStatus;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -83,8 +82,8 @@ public class DefaultUserService implements UserService {
     public List<User> getCommonFriendListWithOtherUser(Integer userId, Integer otherUserId) {
         User user = checkAndGetUserById(userId);
         User otherUser = checkAndGetUserById(otherUserId);
-        Set<Integer> userFriendsList = getApprovedFriendsIds(user);
-        userFriendsList.retainAll(getApprovedFriendsIds(otherUser));
+        Set<Integer> userFriendsList = user.getFriendsId().keySet();
+        userFriendsList.retainAll(otherUser.getFriendsId().keySet());
         return userFriendsList.stream()
                 .map(this::checkAndGetUserById)
                 .toList();
@@ -107,16 +106,5 @@ public class DefaultUserService implements UserService {
         if (user == null) {
             throw new UserNotFoundException(id);
         } else return user;
-    }
-
-    private Set<Integer> getApprovedFriendsIds(User user) {
-        Map<Integer, FriendshipStatus> friendsIds = user.getFriendsId();
-        Set<Integer> friendsIDsSet = new HashSet<>(friendsIds.keySet());
-        for (Integer id: friendsIds.keySet()) {
-            if (friendsIds.get(id) != FriendshipStatus.APPROVED) {
-                friendsIDsSet.remove(id);
-            }
-        }
-        return friendsIDsSet;
     }
 }
