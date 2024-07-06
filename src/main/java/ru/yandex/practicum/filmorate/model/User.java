@@ -18,7 +18,7 @@ import java.util.Map;
 
 @Data
 @Builder
-@AllArgsConstructor //TODO: убрать конструкторы если не нужно
+@AllArgsConstructor //TODO убрать конструкторы если не нужно
 @NoArgsConstructor
 public class User {
     @Min(value = 1, groups = {Update.class}, message = "ID долно быть положжительным числом")

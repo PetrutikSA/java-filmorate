@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
-    user_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     email VARCHAR(256) NOT NULL UNIQUE,
     login VARCHAR(256) NOT NULL,
     name VARCHAR(256),
@@ -8,28 +8,28 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS requested_friends (
     requested_friends_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id BIGINT REFERENCES users(user_id),
-    friend_id BIGINT REFERENCES users(user_id)
+    user_id INT REFERENCES users(user_id),
+    friend_id INT REFERENCES users(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS accepted_friends (
     accepted_friends_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user1_id BIGINT REFERENCES users(user_id),
-    user2_id BIGINT REFERENCES users(user_id)
+    user1_id INT REFERENCES users(user_id),
+    user2_id INT REFERENCES users(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS rating (
-    rating_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    rating_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(256) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS genres (
-    genres_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    genres_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(256) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS films (
-    film_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    film_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(256) NOT NULL,
     description VARCHAR(200),
     release_date DATE,
@@ -39,12 +39,12 @@ CREATE TABLE IF NOT EXISTS films (
 
 CREATE TABLE IF NOT EXISTS films_genres (
     films_genres BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    film_id BIGINT REFERENCES films(film_id),
-    genres_id BIGINT REFERENCES genres(genres_id)
+    film_id INT REFERENCES films(film_id),
+    genres_id INT REFERENCES genres(genres_id)
 );
 
 CREATE TABLE IF NOT EXISTS films_likes (
     films_likes BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    film_id BIGINT REFERENCES films(film_id),
-    user_id BIGINT REFERENCES users(user_id)
+    film_id INT REFERENCES films(film_id),
+    user_id INT REFERENCES users(user_id)
 );

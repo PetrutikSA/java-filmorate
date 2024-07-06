@@ -1,14 +1,14 @@
 package ru.yandex.practicum.filmorate.storage.dal;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.enums.FriendshipStatus;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.storage.dal.mapper.FriendsExtractor;
-import ru.yandex.practicum.filmorate.storage.dal.mapper.UserRowMapper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,11 +17,13 @@ import java.util.Map;
 
 @Primary
 @Repository
-@RequiredArgsConstructor
-public class UserDbStorage implements UserStorage {
-    private final JdbcTemplate jdbc;
-    private final UserRowMapper mapper;
+public class UserDbStorage extends BaseDbStorage<User> implements UserStorage {
     private final FriendsExtractor extractor;
+
+    public UserDbStorage(JdbcTemplate jdbc, RowMapper<User> mapper) {
+        super(jdbc, mapper);
+        extractor = new FriendsExtractor();
+    }
 
     private static final String FIND_ALL_QUERY = "SELECT * FROM users";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM users WHERE user_id = ?";
@@ -56,15 +58,31 @@ public class UserDbStorage implements UserStorage {
                                                            "'REQUESTED' AS status " +
                                                            "FROM REQUESTED_FRIENDS " +
                                                            "WHERE user_id = ?;";
+    private static final String INSERT_QUERY = "INSERT INTO users (email, login, name, birthday)" +
+                                               "VALUES (?, ?, ?, ?)";
+    private static final String UPDATE_QUERY = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? " +
+                                               "WHERE user_id = ?";
 
     @Override
     public User createUser(User user) {
-        return null;
+        Integer userId = insert(INSERT_QUERY,
+                user.getEmail(),
+                user.getLogin(),
+                user.getName(),
+                user.getBirthday());
+        user.setId(userId);
+        return user;
     }
 
     @Override
     public User updateUser(User user) {
-        return null;
+        update(UPDATE_QUERY,
+                user.getEmail(),
+                user.getLogin(),
+                user.getName(),
+                user.getBirthday(),
+                user.getId());
+        return user;
     }
 
     @Override
@@ -88,10 +106,14 @@ public class UserDbStorage implements UserStorage {
     public User getUserById(Integer id) {
         Map<Integer, Map<Integer, FriendshipStatus>> friendsMap =
                 jdbc.query(FIND_BY_ID_FRIENDS_QUERY, extractor, id, id, id);
-        User user  = jdbc.queryForObject(FIND_BY_ID_QUERY, mapper, id);
-        if (user != null && friendsMap != null && !friendsMap.isEmpty()) {
-            user.setFriendsId(friendsMap.get(id));
+        try {
+            User user = jdbc.queryForObject(FIND_BY_ID_QUERY, mapper, id);
+            if (user != null && friendsMap != null && !friendsMap.isEmpty()) {
+                user.setFriendsId(friendsMap.get(id));
+            }
+            return user;
+        } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
+            return null;
         }
-        return user;
     }
 }
