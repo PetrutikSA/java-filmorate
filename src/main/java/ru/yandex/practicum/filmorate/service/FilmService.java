@@ -23,9 +23,9 @@ public interface FilmService {
 
     List<Genre> getGenres();
 
-    Genre getGenreById(Integer genre_id);
+    Genre getGenreById(Integer genreId);
 
     List<Rating> getRatings();
 
-    Rating getRatingById(Integer rating_id);
+    Rating getRatingById(Integer ratingId);
 }

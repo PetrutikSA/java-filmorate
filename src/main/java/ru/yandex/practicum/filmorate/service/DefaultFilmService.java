@@ -82,11 +82,11 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public Genre getGenreById(Integer genre_id) {
-        if (genre_id < 1 || genre_id > Genre.values().length) {
-            throw new GenreNotFoundException(genre_id);
+    public Genre getGenreById(Integer genreId) {
+        if (genreId < 1 || genreId > Genre.values().length) {
+            throw new GenreNotFoundException(genreId);
         }
-        return Genre.forValues(genre_id);
+        return Genre.forValues(genreId);
     }
 
     @Override
@@ -95,10 +95,10 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public Rating getRatingById(Integer rating_id) {
-        if (rating_id < 1 || rating_id > Rating.values().length) {
-            throw new RatingNotFoundException(rating_id);
+    public Rating getRatingById(Integer ratingId) {
+        if (ratingId < 1 || ratingId > Rating.values().length) {
+            throw new RatingNotFoundException(ratingId);
         }
-        return Rating.forValues(rating_id);
+        return Rating.forValues(ratingId);
     }
 }

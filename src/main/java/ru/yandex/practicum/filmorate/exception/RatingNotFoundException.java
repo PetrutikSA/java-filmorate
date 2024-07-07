@@ -5,6 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class RatingNotFoundException extends RuntimeException{
+public class RatingNotFoundException extends RuntimeException {
     private final Integer rating;
 }

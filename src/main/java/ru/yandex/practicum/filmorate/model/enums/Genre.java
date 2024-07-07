@@ -22,8 +22,9 @@ public enum Genre {
     private final Integer id;
     @JsonProperty
     private final String name;
+
     @JsonCreator
-    public static Genre forValues (@JsonProperty("id") Integer id) {
+    public static Genre forValues(@JsonProperty("id") Integer id) {
         for (Genre genre : Genre.values()) {
             if (Objects.equals(genre.id, id)) {
                 return genre;

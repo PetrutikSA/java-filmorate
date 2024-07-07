@@ -55,8 +55,8 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleNotCorrectRatingAndGenreException
-            (HttpMessageNotReadableException exception) {
+    public ResponseEntity<ErrorResponse> handleNotCorrectRatingAndGenreException(
+            HttpMessageNotReadableException exception) {
         Throwable cause = exception.getCause().getCause();
         if (cause instanceof NotCorrectRatingException) {
             log.warn("Not correct rating got from client");

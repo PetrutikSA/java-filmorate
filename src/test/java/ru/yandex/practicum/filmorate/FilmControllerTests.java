@@ -20,6 +20,7 @@ import ru.yandex.practicum.filmorate.storage.inmemorry.InMemoryUserStorage;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -55,9 +56,9 @@ public class FilmControllerTests {
         filmController = new FilmController(new DefaultFilmService(new InMemoryFilmStorage(),
                 new DefaultUserService(new InMemoryUserStorage())));
         film = new Film(null, "name1", "Description1",
-                LocalDate.of(2000, 10, 15), Duration.ofMinutes(120), new HashSet<>(), new HashSet<>(), Rating.PG);
+                LocalDate.of(2000, 10, 15), Duration.ofMinutes(120), new HashSet<>(), new LinkedHashSet<>(), Rating.PG);
         updatedFilm = new Film(1, "updatedName", "UpdatedDescription",
-                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new HashSet<>(), new HashSet<>(), Rating.PG);
+                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new HashSet<>(), new LinkedHashSet<>(), Rating.PG);
     }
 
     @Test
@@ -160,7 +161,7 @@ public class FilmControllerTests {
     void correctReturnAllFilms() {
         filmController.addFilm(film);
         Film film2 = new Film(null, "name2", "description2",
-                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new HashSet<>(), new HashSet<>(), Rating.PG);
+                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new HashSet<>(), new LinkedHashSet<>(), Rating.PG);
         filmController.addFilm(film2);
         List<Film> filmList = filmController.getAllFilms();
         assertEquals(2, filmList.size(), returnFilmsListNotCorrectSize);
