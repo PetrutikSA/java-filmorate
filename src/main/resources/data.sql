@@ -11,3 +11,22 @@ INSERT INTO requested_friends (user_id, friend_id)
 VALUES (1, 3),
        (2, 3),
        (2, 4);
+
+INSERT INTO rating (name)
+VALUES ('G'), ('PG'), ('PG-13'), ('R'), ('NC-17');
+
+INSERT INTO genres (name)
+VALUES ('Комедия'), ('Драма'), ('Мультфильм'), ('Триллер'), ('Документальный'), ('Боевик');
+
+
+INSERT INTO films (name, description, release_date, duration, rating_id)
+VALUES ('WVpj46QoOT9P8Nv', 'cqu3io2rnhkFcQLazR3Vc7XKKiVQQbYRRMC6sjFPh0ax1qo3kX', '2003-05-11', '79', 1),
+    ('hiqhgiegjr', 'efwiuhfoiuhwaofihaifhf', '2021-05-16', '120', 3),
+    ('efweiufhihfeiuhfi', 'ifuewifwiuhfiuhewfihwief', '1980-09-11', '180', 3),
+    ('efwefwefwoiefjow', 'wfefgwifyuweufwiuhfieuhw', '2020-09-09', '20', 5);
+
+INSERT INTO films_likes (film_id, user_id)
+VALUES (1, 3), (1, 1), (2, 1);
+
+INSERT INTO films_genres (film_id, genre_id)
+VALUES (1, 3), (2, 1), (3, 2), (3, 3), (4, 1);

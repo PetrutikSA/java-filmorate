@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS films (
 CREATE TABLE IF NOT EXISTS films_genres (
     films_genres BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     film_id INT REFERENCES films(film_id),
-    genres_id INT REFERENCES genres(genres_id)
+    genre_id INT REFERENCES genres(genres_id)
 );
 
 CREATE TABLE IF NOT EXISTS films_likes (
