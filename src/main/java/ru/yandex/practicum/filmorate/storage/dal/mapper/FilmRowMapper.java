@@ -1,0 +1,25 @@
+package ru.yandex.practicum.filmorate.storage.dal.mapper;
+
+import org.springframework.jdbc.core.RowMapper;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.enums.Rating;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.Duration;
+import java.util.LinkedHashSet;
+
+public class FilmRowMapper implements RowMapper<Film> {
+    @Override
+    public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
+        return Film.builder()
+                .id(rs.getInt("film_id"))
+                .name(rs.getString("name"))
+                .description(rs.getString("description"))
+                .releaseDate(rs.getDate("release_date").toLocalDate())
+                .duration(Duration.ofMinutes(rs.getInt("duration")))
+                .mpa(Rating.forValues(rs.getInt("rating_id")))
+                .genres(new LinkedHashSet<>())
+                .build();
+    }
+}
