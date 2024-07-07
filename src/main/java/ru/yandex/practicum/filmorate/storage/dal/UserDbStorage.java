@@ -5,6 +5,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exception.InternalServerException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.enums.FriendshipStatus;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -28,40 +29,56 @@ public class UserDbStorage extends BaseDbStorage<User> implements UserStorage {
     private static final String FIND_ALL_QUERY = "SELECT * FROM users";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM users WHERE user_id = ?";
     private static final String FIND_ALL_FRIENDS_QUERY = "SELECT user2_id AS user_id," +
-                                                         "user1_id AS friend_id, " +
-                                                         "'APPROVED' AS status " +
-                                                         "FROM accepted_friends " +
-                                                         "UNION " +
-                                                         "SELECT user1_id  AS user_id, " +
-                                                         "user2_id AS friend_id, " +
-                                                         "'APPROVED' AS status " +
-                                                         "FROM accepted_friends " +
-                                                         "UNION " +
-                                                         "SELECT user_id  AS user_id, " +
-                                                         "friend_id AS friend_id, " +
-                                                         "'REQUESTED' AS status " +
-                                                         "FROM REQUESTED_FRIENDS;";
+            "user1_id AS friend_id, " +
+            "'APPROVED' AS status " +
+            "FROM approved_friends " +
+            "UNION " +
+            "SELECT user1_id  AS user_id, " +
+            "user2_id AS friend_id, " +
+            "'APPROVED' AS status " +
+            "FROM approved_friends " +
+            "UNION " +
+            "SELECT user_id  AS user_id, " +
+            "friend_id AS friend_id, " +
+            "'REQUESTED' AS status " +
+            "FROM requested_friends;";
     private static final String FIND_BY_ID_FRIENDS_QUERY = "SELECT user2_id AS user_id," +
-                                                           "user1_id AS friend_id, " +
-                                                           "'APPROVED' AS status " +
-                                                           "FROM accepted_friends " +
-                                                           "WHERE user2_id = ? " +
-                                                           "UNION " +
-                                                           "SELECT user1_id  AS user_id, " +
-                                                           "user2_id AS friend_id, " +
-                                                           "'APPROVED' AS status " +
-                                                           "FROM accepted_friends " +
-                                                           "WHERE user1_id = ? " +
-                                                           "UNION " +
-                                                           "SELECT user_id  AS user_id, " +
-                                                           "friend_id AS friend_id, " +
-                                                           "'REQUESTED' AS status " +
-                                                           "FROM REQUESTED_FRIENDS " +
-                                                           "WHERE user_id = ?;";
+            "user1_id AS friend_id, " +
+            "'APPROVED' AS status " +
+            "FROM approved_friends " +
+            "WHERE user2_id = ? " +
+            "UNION " +
+            "SELECT user1_id  AS user_id, " +
+            "user2_id AS friend_id, " +
+            "'APPROVED' AS status " +
+            "FROM approved_friends " +
+            "WHERE user1_id = ? " +
+            "UNION " +
+            "SELECT user_id  AS user_id, " +
+            "friend_id AS friend_id, " +
+            "'REQUESTED' AS status " +
+            "FROM requested_friends " +
+            "WHERE user_id = ?;";
     private static final String INSERT_QUERY = "INSERT INTO users (email, login, name, birthday)" +
-                                               "VALUES (?, ?, ?, ?)";
+            "VALUES (?, ?, ?, ?)";
     private static final String UPDATE_QUERY = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? " +
-                                               "WHERE user_id = ?";
+            "WHERE user_id = ?";
+    private static final String REMOVE_REQUESTED_FRIEND_QUERY = "DELETE FROM requested_friends " +
+            "WHERE user_id = ? " +
+            "AND friend_id = ?";
+    private static final String REMOVE_APPROVED_FRIEND_QUERY = "DELETE FROM approved_friends " +
+            "WHERE approved_friends_id = ( " +
+            "SELECT approved_friends_id " +
+            "FROM approved_friends " +
+            "WHERE user1_id = ? " +
+            "UNION " +
+            "SELECT approved_friends_id " +
+            "FROM approved_friends " +
+            "WHERE user2_id = ?)";
+    private static final String INSERT_REQUESTED_FRIEND_QUERY = "INSERT INTO requested_friends (user_id, friend_id) " +
+            "VALUES (?, ?)";
+    private static final String INSERT_APPROVED_FRIEND_QUERY = "INSERT INTO approved_friends (user1_id, user2_id) " +
+            "VALUES (?, ?)";
 
     @Override
     public User createUser(User user) {
@@ -115,5 +132,37 @@ public class UserDbStorage extends BaseDbStorage<User> implements UserStorage {
         } catch (EmptyResultDataAccessException emptyResultDataAccessException) {
             return null;
         }
+    }
+
+    public User deleteFriend(User user, Integer friendId, FriendshipStatus status) {
+        int rowsUpdated;
+        if (status == FriendshipStatus.REQUESTED) {
+            rowsUpdated = jdbc.update(REMOVE_REQUESTED_FRIEND_QUERY, user.getId(), friendId);
+        } else if (status == FriendshipStatus.APPROVED) {
+            rowsUpdated = jdbc.update(REMOVE_APPROVED_FRIEND_QUERY, user.getId(), user.getId());
+        } else {
+            throw new InternalServerException("Неизвестный статус дружбы");
+        }
+        if (rowsUpdated == 0) {
+            throw new InternalServerException("Не удалось удалить данные");
+        }
+        user.getFriendsId().remove(friendId);
+        return user;
+    }
+
+    public User addFriend(User user, Integer friendId, FriendshipStatus status) {
+        int rowsUpdated;
+        if (status == FriendshipStatus.REQUESTED) {
+            rowsUpdated = jdbc.update(INSERT_REQUESTED_FRIEND_QUERY, user.getId(), friendId);
+        } else if (status == FriendshipStatus.APPROVED) {
+            rowsUpdated = jdbc.update(INSERT_APPROVED_FRIEND_QUERY, user.getId(), friendId);
+        } else {
+            throw new InternalServerException("Неизвестный статус дружбы");
+        }
+        if (rowsUpdated == 0) {
+            throw new InternalServerException("Не удалось добавить данные");
+        }
+        user.getFriendsId().put(friendId, status);
+        return user;
     }
 }

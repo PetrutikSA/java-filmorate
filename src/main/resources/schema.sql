@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS requested_friends (
     friend_id INT REFERENCES users(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS accepted_friends (
-    accepted_friends_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS approved_friends (
+    approved_friends_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user1_id INT REFERENCES users(user_id),
     user2_id INT REFERENCES users(user_id)
 );

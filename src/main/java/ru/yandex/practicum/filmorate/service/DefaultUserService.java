@@ -45,28 +45,38 @@ public class DefaultUserService implements UserService {
         User friend = checkAndGetUserById(friendId);
         Map<Integer,FriendshipStatus> friendsIDsOfUser = user.getFriendsId();
         Map<Integer, FriendshipStatus> friendsIDsOfFriend = friend.getFriendsId();
-        if (friendsIDsOfFriend.containsKey(userId)) {
-            friendsIDsOfFriend.put(userId, FriendshipStatus.APPROVED);
-            friendsIDsOfUser.put(friendId, FriendshipStatus.APPROVED);
+        if (friendsIDsOfUser.containsKey(friendId)) {
+            log.warn("User with id={} already has friend with id={}", userId, friendId);
+        } else if (friendsIDsOfFriend.containsKey(userId)) {
+            userStorage.deleteFriend(friend, userId, FriendshipStatus.REQUESTED);
+            user = userStorage.addFriend(user, friendId, FriendshipStatus.APPROVED);
+            userStorage.addFriend(friend, userId, FriendshipStatus.APPROVED);
             log.info("Users with id={} and id={} become friends", userId, friendId);
-            return user;
         } else {
-            friendsIDsOfUser.put(friendId, FriendshipStatus.REQUESTED);
+            user = userStorage.addFriend(user, friendId, FriendshipStatus.REQUESTED);
             log.info("Users with id={} requested to become friends with user id={}", userId, friendId);
-            return user;
         }
+        return user;
     }
 
     @Override
     public User deleteFriend(Integer userId, Integer friendId) {
         User user = checkAndGetUserById(userId);
         User friend = checkAndGetUserById(friendId);
-        user.getFriendsId().remove(friendId);
+        Map<Integer,FriendshipStatus> friendsIDsOfUser = user.getFriendsId();
         Map<Integer, FriendshipStatus> friendsIDsOfFriend = friend.getFriendsId();
-        if (friendsIDsOfFriend.containsKey(userId)) {
-            friendsIDsOfFriend.put(userId, FriendshipStatus.REQUESTED);
+        if (!friendsIDsOfUser.containsKey(friendId)) {
+            log.warn("User with id={} has no friend with id={}", userId, friendId);
+        } else if (friendsIDsOfUser.get(friendId) == FriendshipStatus.REQUESTED) {
+            user = userStorage.deleteFriend(user, friendId, FriendshipStatus.REQUESTED);
+            log.info("Users with id={} no longer request friends with user with id={}", userId, friendId);
+        } else {
+            user = userStorage.deleteFriend(user, friendId, FriendshipStatus.APPROVED);
+            friend = userStorage.deleteFriend(friend, userId, FriendshipStatus.APPROVED);
+            userStorage.addFriend(friend, userId, FriendshipStatus.REQUESTED);
+            log.info("Users with id={} no longer friend with user with id={} ", userId, friendId);
+            log.info("Users with id={} now requested to become friends with user id={}", friendId, userId);
         }
-        log.info("Users with id={} and id={} no longer friends", userId, friendId);
         return user;
     }
 
