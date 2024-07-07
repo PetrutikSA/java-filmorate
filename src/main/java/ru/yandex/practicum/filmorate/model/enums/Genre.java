@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.yandex.practicum.filmorate.exception.NotCorrectGenreException;
 
@@ -18,6 +19,7 @@ public enum Genre {
     DOCUMENTARY(5, "Документальный"),
     ACTION(6, "Боевик");
 
+    @Getter
     @JsonProperty
     private final Integer id;
     @JsonProperty

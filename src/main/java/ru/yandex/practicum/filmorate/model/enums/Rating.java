@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.yandex.practicum.filmorate.exception.NotCorrectRatingException;
 
@@ -15,6 +16,7 @@ public enum Rating {
     R(4, "R", "лицам до 17 лет просматривать фильм можно только в присутствии взрослого"),
     NC17(5, "NC-17", "лицам до 18 лет просмотр запрещён");
 
+    @Getter
     @JsonProperty("id")
     private final Integer id;
     @JsonProperty("name")

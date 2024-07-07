@@ -37,6 +37,13 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
     private static final String FIND_BY_FILM_ID_LIKES_QUERY = "SELECT film_id, user_id " +
             "FROM films_likes WHERE film_id = ?";
 
+    private static final String INSERT_QUERY = "INSERT INTO films " +
+            "(name, description, release_date, duration, rating_id) VALUES (?, ?, ?, ?, ?)";
+    private static final String UPDATE_QUERY = "UPDATE films " +
+            "SET name = ?, description = ?, release_date = ?, duration = ?, rating_id = ? WHERE film_id = ?";
+    private static final String INSERT_FILM_GENRES_QUERY = "INSERT INTO films_genres " +
+            "(film_id, genre_id) VALUES (?, ?)";
+    private static final String DELETE_FILM_GENRES_QUERY = "DELETE FROM films_genres WHERE film_id = ?";
 
     @Override
     public Film getFilmById(Integer id) {
@@ -82,11 +89,35 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) {
-        return null;
+        Integer id = insert(INSERT_QUERY,
+                film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration(),
+                film.getMpa().getId());
+        for (Genre genre : film.getGenres()) {
+            insert(INSERT_FILM_GENRES_QUERY, id, genre.getId());
+        }
+        film.setId(id);
+        return film;
     }
 
     @Override
     public Film updateFilm(Film film) {
-        return null;
+        Integer id = film.getId();
+        update(UPDATE_QUERY,
+                film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration(),
+                film.getMpa().getId(),
+                id);
+        if (film.getGenres() != null && !film.getGenres().isEmpty()) {
+            update(DELETE_FILM_GENRES_QUERY, id);
+            for (Genre genre : film.getGenres()) {
+                insert(INSERT_FILM_GENRES_QUERY, id, genre.getId());
+            }
+        }
+        return film;
     }
 }
