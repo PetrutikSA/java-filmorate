@@ -40,7 +40,7 @@ public class DefaultFilmService implements FilmService {
     public Film userPostLikeToFilm(Integer filmId, Integer userId) {
         Film film = checkAndGetFilmById(filmId);
         userService.checkAndGetUserById(userId);
-        film.getUsersIdPostedLikes().add(userId);
+        film = filmStorage.userPostLikeToFilm(film, userId);
         log.info("Users with id={} liked film with id={}", userId, filmId);
         return film;
     }
@@ -49,7 +49,7 @@ public class DefaultFilmService implements FilmService {
     public Film userDeleteLikeToFilm(Integer filmId, Integer userId) {
         Film film = checkAndGetFilmById(filmId);
         userService.checkAndGetUserById(userId);
-        film.getUsersIdPostedLikes().remove(userId);
+        film = filmStorage.userDeleteLikeToFilm(film, userId);
         log.info("Users with id={} unliked film with id={}", userId, filmId);
         return film;
     }

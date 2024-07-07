@@ -12,4 +12,8 @@ public interface FilmStorage {
     List<Film> getAllFilms();
 
     Film getFilmById(Integer id);
+
+    Film userPostLikeToFilm(Film film, Integer userId);
+
+    Film userDeleteLikeToFilm(Film film, Integer userId);
 }

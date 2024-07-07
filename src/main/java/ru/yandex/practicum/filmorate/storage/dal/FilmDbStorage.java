@@ -44,6 +44,9 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
     private static final String INSERT_FILM_GENRES_QUERY = "INSERT INTO films_genres " +
             "(film_id, genre_id) VALUES (?, ?)";
     private static final String DELETE_FILM_GENRES_QUERY = "DELETE FROM films_genres WHERE film_id = ?";
+    private static final String INSERT_FILM_LIKE_QUERY = "INSERT INTO films_likes " +
+            "(film_id, user_id) VALUES (?, ?)";
+    private static final String DELETE_FILM_LIKE_QUERY = "DELETE FROM films_likes WHERE film_id = ? AND user_id = ?";
 
     @Override
     public Film getFilmById(Integer id) {
@@ -79,7 +82,7 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
                     film.setGenres(new LinkedHashSet<>());
                 }
 
-                if (likesMap != null && !likesMap.isEmpty()) {
+                if (likesMap != null && !likesMap.isEmpty() && likesMap.containsKey(filmId)) {
                     film.setUsersIdPostedLikes(likesMap.get(filmId));
                 }
             }
@@ -93,10 +96,12 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
-                film.getDuration(),
+                film.getDuration().toMinutes(),
                 film.getMpa().getId());
-        for (Genre genre : film.getGenres()) {
-            insert(INSERT_FILM_GENRES_QUERY, id, genre.getId());
+        if (film.getGenres() != null && !film.getGenres().isEmpty()) {
+            for (Genre genre : film.getGenres()) {
+                insert(INSERT_FILM_GENRES_QUERY, id, genre.getId());
+            }
         }
         film.setId(id);
         return film;
@@ -118,6 +123,20 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
                 insert(INSERT_FILM_GENRES_QUERY, id, genre.getId());
             }
         }
+        return film;
+    }
+
+    @Override
+    public Film userPostLikeToFilm(Film film, Integer userId) {
+        insert(INSERT_FILM_LIKE_QUERY, film.getId(), userId);
+        film.getUsersIdPostedLikes().add(userId);
+        return film;
+    }
+
+    @Override
+    public Film userDeleteLikeToFilm(Film film, Integer userId) {
+        update(DELETE_FILM_LIKE_QUERY, film.getId(), userId);
+        film.getUsersIdPostedLikes().remove(userId);
         return film;
     }
 }
