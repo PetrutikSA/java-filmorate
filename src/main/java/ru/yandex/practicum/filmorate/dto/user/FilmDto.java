@@ -1,7 +1,11 @@
 package ru.yandex.practicum.filmorate.dto.user;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Builder;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.model.adapter.JsonDurationDeserializer;
+import ru.yandex.practicum.filmorate.model.adapter.JsonDurationSerializer;
 import ru.yandex.practicum.filmorate.model.enums.Genre;
 import ru.yandex.practicum.filmorate.model.enums.Rating;
 
@@ -17,6 +21,8 @@ public class FilmDto {
     private String name;
     private String description;
     private LocalDate releaseDate;
+    @JsonSerialize(using = JsonDurationSerializer.class)
+    @JsonDeserialize(using = JsonDurationDeserializer.class)
     private Duration duration;
     private Set<Integer> usersIdPostedLikes;
     private LinkedHashSet<Genre> genres;

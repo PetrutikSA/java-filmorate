@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.dto.user.FilmCreateRequest;
+import ru.yandex.practicum.filmorate.dto.user.FilmDto;
+import ru.yandex.practicum.filmorate.dto.user.FilmUpdateRequest;
 import ru.yandex.practicum.filmorate.model.enums.Genre;
 import ru.yandex.practicum.filmorate.model.enums.Rating;
 import ru.yandex.practicum.filmorate.model.validator.Create;
@@ -26,37 +28,37 @@ public class FilmController {
     private final FilmService filmService;
 
     @PostMapping("/films")
-    public Film addFilm(@RequestBody @Validated(Create.class) @NonNull Film film) {
+    public FilmDto addFilm(@RequestBody @Validated(Create.class) @NonNull FilmCreateRequest film) {
         return filmService.addFilm(film);
     }
 
     @PutMapping("/films")
-    public Film updateFilm(@RequestBody @Validated(Update.class) @NonNull Film film) {
+    public FilmDto updateFilm(@RequestBody @Validated(Update.class) @NonNull FilmUpdateRequest film) {
         return filmService.updateFilm(film);
     }
 
     @GetMapping("/films")
-    public List<Film> getAllFilms() {
+    public List<FilmDto> getAllFilms() {
         return filmService.getAllFilms();
     }
 
     @GetMapping("/films/{filmId}")
-    public Film getById(@PathVariable Integer filmId) {
-        return filmService.checkAndGetFilmById(filmId);
+    public FilmDto getById(@PathVariable Integer filmId) {
+        return filmService.getFilmById(filmId);
     }
 
     @PutMapping("/films/{filmId}/like/{userId}")
-    public Film userPostLikeToFilm(@PathVariable Integer filmId, @PathVariable Integer userId) {
+    public FilmDto userPostLikeToFilm(@PathVariable Integer filmId, @PathVariable Integer userId) {
         return filmService.userPostLikeToFilm(filmId, userId);
     }
 
     @DeleteMapping("/films/{filmId}/like/{userId}")
-    public Film userDeleteLikeToFilm(@PathVariable Integer filmId, @PathVariable Integer userId) {
+    public FilmDto userDeleteLikeToFilm(@PathVariable Integer filmId, @PathVariable Integer userId) {
         return filmService.userDeleteLikeToFilm(filmId, userId);
     }
 
     @GetMapping("/films/popular")
-    public List<Film> getTopLikedFilms(@RequestParam(defaultValue = "10") Integer count) {
+    public List<FilmDto> getTopLikedFilms(@RequestParam(defaultValue = "10") Integer count) {
         return filmService.getTopLikedFilms(count);
     }
 

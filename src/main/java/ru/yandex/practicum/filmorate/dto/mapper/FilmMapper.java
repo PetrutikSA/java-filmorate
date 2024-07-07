@@ -45,7 +45,7 @@ public final class FilmMapper {
         return film;
     }
 
-    public static FilmDto userToUserDto(Film film) {
+    public static FilmDto filmToFilmDto(Film film) {
         return FilmDto.builder()
                 .id(film.getId())
                 .name(film.getName())
