@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.service;
 
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.enums.Genre;
+import ru.yandex.practicum.filmorate.model.enums.Rating;
 
 import java.util.List;
 
@@ -18,4 +20,12 @@ public interface FilmService {
     List<Film> getTopLikedFilms(Integer count);
 
     Film checkAndGetFilmById(Integer id);
+
+    List<Genre> getGenres();
+
+    Genre getGenreById(Integer genre_id);
+
+    List<Rating> getRatings();
+
+    Rating getRatingById(Integer rating_id);
 }

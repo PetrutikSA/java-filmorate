@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
 import ru.yandex.practicum.filmorate.exception.NotCorrectGenreException;
 import ru.yandex.practicum.filmorate.exception.NotCorrectRatingException;
+import ru.yandex.practicum.filmorate.exception.RatingNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 
 @RestControllerAdvice
@@ -74,5 +76,19 @@ public class ErrorHandler {
     public ErrorResponse handleRuntimeException(Exception exception) {
         log.warn("Unexpected exception", exception);
         return new ErrorResponse("Произошла непредвиденная ошибка");
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleGenreNotFoundException(GenreNotFoundException exception) {
+        log.warn("Requested non existed Genre with id={}", exception.getGenreId());
+        return new ErrorResponse(String.format("Жанра с ID=%d не зарегистрировано", exception.getGenreId()));
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleRatingNotFoundException(RatingNotFoundException exception) {
+        log.warn("Requested non existed Rating with id={}", exception.getRating());
+        return new ErrorResponse(String.format("Рейтинга с ID=%d не зарегистрировано", exception.getRating()));
     }
 }
