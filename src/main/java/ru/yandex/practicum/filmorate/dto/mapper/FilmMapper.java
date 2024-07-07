@@ -2,9 +2,9 @@ package ru.yandex.practicum.filmorate.dto.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.yandex.practicum.filmorate.dto.user.FilmCreateRequest;
-import ru.yandex.practicum.filmorate.dto.user.FilmDto;
-import ru.yandex.practicum.filmorate.dto.user.FilmUpdateRequest;
+import ru.yandex.practicum.filmorate.dto.film.FilmCreateRequest;
+import ru.yandex.practicum.filmorate.dto.film.FilmDto;
+import ru.yandex.practicum.filmorate.dto.film.FilmUpdateRequest;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.HashSet;

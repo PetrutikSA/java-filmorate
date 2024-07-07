@@ -1,5 +1,4 @@
 package ru.yandex.practicum.filmorate;
-/*
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -8,8 +7,10 @@ import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
+import ru.yandex.practicum.filmorate.dto.film.FilmCreateRequest;
+import ru.yandex.practicum.filmorate.dto.film.FilmDto;
+import ru.yandex.practicum.filmorate.dto.film.FilmUpdateRequest;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.enums.Rating;
 import ru.yandex.practicum.filmorate.model.validator.Create;
 import ru.yandex.practicum.filmorate.model.validator.Update;
@@ -20,7 +21,6 @@ import ru.yandex.practicum.filmorate.storage.inmemorry.InMemoryUserStorage;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,13 +29,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-*/
 
 public class FilmControllerTests {
 
-    /*private FilmController filmController;
-    private Film film;
-    private Film updatedFilm;
+    private FilmController filmController;
+    private FilmCreateRequest film;
+    private FilmUpdateRequest updatedFilm;
     private final String notCorrectName = " ";
     private final String notCorrectDescription = "Пятеро друзей ( комик-группа «Шарло»), приезжают в город Бризуль. " +
             "Здесь они хотят разыскать господина Огюста Куглова, который задолжал им деньги, а именно 20 миллионов. " +
@@ -57,10 +56,10 @@ public class FilmControllerTests {
         validator = validatorFactory.getValidator();
         filmController = new FilmController(new DefaultFilmService(new InMemoryFilmStorage(),
                 new DefaultUserService(new InMemoryUserStorage())));
-        film = new Film(null, "name1", "Description1",
-                LocalDate.of(2000, 10, 15), Duration.ofMinutes(120), new HashSet<>(), new LinkedHashSet<>(), Rating.PG);
-        updatedFilm = new Film(1, "updatedName", "UpdatedDescription",
-                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new HashSet<>(), new LinkedHashSet<>(), Rating.PG);
+        film = new FilmCreateRequest("name1", "Description1",
+                LocalDate.of(2000, 10, 15), Duration.ofMinutes(120), new LinkedHashSet<>(), Rating.PG);
+        updatedFilm = new FilmUpdateRequest(1, "updatedName", "UpdatedDescription",
+                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new LinkedHashSet<>(), Rating.PG);
     }
 
     @Test
@@ -71,41 +70,40 @@ public class FilmControllerTests {
 
     @Test
     void correctFilmCreated() {
-        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Set<ConstraintViolation<FilmCreateRequest>> violations = validator.validate(film);
         assertTrue(violations.isEmpty(), "Корректный фильм не проходит валидацию");
         filmController.addFilm(film);
-        List<Film> filmList = filmController.getAllFilms();
+        List<FilmDto> filmList = filmController.getAllFilms();
         assertEquals(1, filmList.size(), returnFilmsListNotCorrectSize);
-        Film filmFromController = filmController.getAllFilms().get(0);
-        film.setId(1);
-        assertEquals(film, filmFromController, returnNotCorrectFilm);
+        FilmDto filmFromController = filmList.get(0);
+        assertEquals(film.getName(), filmFromController.getName(), returnNotCorrectFilm);
     }
 
     @Test
     void createdEmptyNameFilmValidationsProvideError() {
         film.setName(notCorrectName);
-        Set<ConstraintViolation<Film>> violations = validator.validate(film, Create.class);
+        Set<ConstraintViolation<FilmCreateRequest>> violations = validator.validate(film, Create.class);
         assertFalse(violations.isEmpty(), emptyNameValidationViolation);
     }
 
     @Test
     void createFilmDescriptionLengthMore200ProvideError() {
         film.setDescription(notCorrectDescription);
-        Set<ConstraintViolation<Film>> violations = validator.validate(film, Create.class);
+        Set<ConstraintViolation<FilmCreateRequest>> violations = validator.validate(film, Create.class);
         assertFalse(violations.isEmpty(), descriptionSizeValidationViolation);
     }
 
     @Test
     void createFilmRealiseDateEarlierDateOfFirstFilmProvideError() {
         film.setReleaseDate(notCorrectReleaseDate);
-        Set<ConstraintViolation<Film>> violations = validator.validate(film, Create.class);
+        Set<ConstraintViolation<FilmCreateRequest>> violations = validator.validate(film, Create.class);
         assertFalse(violations.isEmpty(), releaseDateBorderValidationViolation);
     }
 
     @Test
     void createFilmDurationNegativeValueProvideError() {
         film.setDuration(notCorrectDuration);
-        Set<ConstraintViolation<Film>> violations = validator.validate(film, Create.class);
+        Set<ConstraintViolation<FilmCreateRequest>> violations = validator.validate(film, Create.class);
         assertFalse(violations.isEmpty(), negativeDurationValidationViolation);
     }
 
@@ -121,17 +119,17 @@ public class FilmControllerTests {
     void correctFilmUpdate() {
         filmController.addFilm(film);
         filmController.updateFilm(updatedFilm);
-        List<Film> filmList = filmController.getAllFilms();
+        List<FilmDto> filmList = filmController.getAllFilms();
         assertEquals(1, filmList.size(), returnFilmsListNotCorrectSize);
-        Film filmFromController = filmController.getAllFilms().get(0);
-        assertEquals(updatedFilm, filmFromController, returnNotCorrectFilm);
+        FilmDto filmFromController = filmList.get(0);
+        assertEquals(updatedFilm.getName(), filmFromController.getName(), returnNotCorrectFilm);
     }
 
     @Test
     void updateEmptyNameFilmProvideError() {
         filmController.addFilm(film);
         updatedFilm.setName(notCorrectName);
-        Set<ConstraintViolation<Film>> violations = validator.validate(updatedFilm, Update.class);
+        Set<ConstraintViolation<FilmUpdateRequest>> violations = validator.validate(updatedFilm, Update.class);
         assertFalse(violations.isEmpty(), emptyNameValidationViolation);
     }
 
@@ -139,7 +137,7 @@ public class FilmControllerTests {
     void updateFilmDescriptionLengthMore200ProvideError() {
         filmController.addFilm(film);
         updatedFilm.setDescription(notCorrectDescription);
-        Set<ConstraintViolation<Film>> violations = validator.validate(updatedFilm, Update.class);
+        Set<ConstraintViolation<FilmUpdateRequest>> violations = validator.validate(updatedFilm, Update.class);
         assertFalse(violations.isEmpty(), descriptionSizeValidationViolation);
     }
 
@@ -147,7 +145,7 @@ public class FilmControllerTests {
     void updateFilmRealiseDateEarlierDateOfFirstFilmProvideError() {
         filmController.addFilm(film);
         updatedFilm.setReleaseDate(notCorrectReleaseDate);
-        Set<ConstraintViolation<Film>> violations = validator.validate(updatedFilm, Update.class);
+        Set<ConstraintViolation<FilmUpdateRequest>> violations = validator.validate(updatedFilm, Update.class);
         assertFalse(violations.isEmpty(), releaseDateBorderValidationViolation);
     }
 
@@ -155,21 +153,19 @@ public class FilmControllerTests {
     void updateFilmDurationNegativeValueProvideError() {
         filmController.addFilm(film);
         updatedFilm.setDuration(notCorrectDuration);
-        Set<ConstraintViolation<Film>> violations = validator.validate(updatedFilm, Update.class);
+        Set<ConstraintViolation<FilmUpdateRequest>> violations = validator.validate(updatedFilm, Update.class);
         assertFalse(violations.isEmpty(), negativeDurationValidationViolation);
     }
 
     @Test
     void correctReturnAllFilms() {
         filmController.addFilm(film);
-        Film film2 = new Film(null, "name2", "description2",
-                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new HashSet<>(), new LinkedHashSet<>(), Rating.PG);
+        FilmCreateRequest film2 = new FilmCreateRequest("name2", "description2",
+                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new LinkedHashSet<>(), Rating.PG);
         filmController.addFilm(film2);
-        List<Film> filmList = filmController.getAllFilms();
+        List<FilmDto> filmList = filmController.getAllFilms();
         assertEquals(2, filmList.size(), returnFilmsListNotCorrectSize);
-        film.setId(1);
-        assertEquals(film, filmController.getAllFilms().get(0), returnNotCorrectFilm);
-        film2.setId(2);
-        assertEquals(film2, filmController.getAllFilms().get(1), returnNotCorrectFilm);
-    }*/
+        assertEquals(film.getName(), filmController.getAllFilms().get(0).getName(), returnNotCorrectFilm);
+        assertEquals(film2.getName(), filmController.getAllFilms().get(1).getName(), returnNotCorrectFilm);
+    }
 }

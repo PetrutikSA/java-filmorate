@@ -4,12 +4,16 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.model.validator.Create;
 
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserCreateRequest {
     @Email(groups = {Create.class}, message = "Введен некорректный e-mail")
     @NotBlank(groups = {Create.class}, message = "E-mail не может быть пустым")

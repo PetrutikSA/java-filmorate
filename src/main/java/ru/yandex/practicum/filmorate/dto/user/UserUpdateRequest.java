@@ -6,12 +6,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.model.validator.Update;
 
 import java.time.LocalDate;
 
 @Data
+
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserUpdateRequest {
     @Min(value = 1, groups = {Update.class}, message = "ID долно быть положжительным числом")
     @NotNull
