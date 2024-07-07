@@ -1,10 +1,34 @@
 package ru.yandex.practicum.filmorate.model.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.RequiredArgsConstructor;
+import ru.yandex.practicum.filmorate.exception.NotCorrectGenreException;
+
+import java.util.Objects;
+
+@RequiredArgsConstructor
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Genre {
-    COMEDY,
-    DRAMA,
-    CARTOON,
-    THRILLER,
-    DOCUMENTARY,
-    ACTION
+    COMEDY(1, "Комедия"),
+    DRAMA(2, "Драма"),
+    CARTOON(3, "Мультфильм"),
+    THRILLER(4, "Триллер"),
+    DOCUMENTARY(5, "Документальный"),
+    ACTION(6, "Боевик");
+
+    @JsonProperty
+    private final Integer id;
+    @JsonProperty
+    private final String name;
+    @JsonCreator
+    public static Genre forValues (@JsonProperty("id") Integer id) {
+        for (Genre genre : Genre.values()) {
+            if (Objects.equals(genre.id, id)) {
+                return genre;
+            }
+        }
+        throw new NotCorrectGenreException();
+    }
 }

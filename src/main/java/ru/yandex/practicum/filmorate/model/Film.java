@@ -19,6 +19,7 @@ import ru.yandex.practicum.filmorate.model.validator.Update;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Data
@@ -41,6 +42,6 @@ public class Film {
     @JsonDeserialize(using = JsonDurationDeserializer.class)
     private Duration duration;
     private Set<Integer> usersIdPostedLikes;
-    private Set<Genre> genre;
+    private LinkedHashSet<Genre> genres;
     private Rating mpa;
 }

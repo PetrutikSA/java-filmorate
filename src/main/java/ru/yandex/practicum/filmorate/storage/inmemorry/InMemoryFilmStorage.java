@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film addFilm(Film film) {
         film.setId(++lastFilmId);
+        if (film.getGenres() == null) {
+            film.setGenres(new LinkedHashSet<>());
+        }
         films.put(film.getId(), film);
         log.info("Created film with id={}:\n{}", film.getId(), film);
         return film;
