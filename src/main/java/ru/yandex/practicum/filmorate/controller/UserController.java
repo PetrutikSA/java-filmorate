@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.filmorate.dto.user.UserCreateRequest;
+import ru.yandex.practicum.filmorate.dto.user.UserDto;
+import ru.yandex.practicum.filmorate.dto.user.UserUpdateRequest;
 import ru.yandex.practicum.filmorate.model.validator.Create;
 import ru.yandex.practicum.filmorate.model.validator.Update;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.List;
@@ -27,42 +29,42 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public User createUser(@RequestBody @Validated(Create.class) @NonNull User user) {
+    public UserDto createUser(@RequestBody @Validated(Create.class) @NonNull UserCreateRequest user) {
         return userService.createUser(user);
     }
 
     @PutMapping
-    public User updateUser(@RequestBody @Validated(Update.class) @NonNull User user) {
+    public UserDto updateUser(@RequestBody @Validated(Update.class) @NonNull UserUpdateRequest user) {
         return userService.updateUser(user);
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/{userId}")
-    public User getById(@PathVariable Integer userId) {
-        return userService.checkAndGetUserById(userId);
+    public UserDto getById(@PathVariable Integer userId) {
+        return userService.getById(userId);
     }
 
     @PutMapping("/{userId}/friends/{friendId}")
-    public User addFriend(@PathVariable Integer userId, @PathVariable Integer friendId) {
+    public UserDto addFriend(@PathVariable Integer userId, @PathVariable Integer friendId) {
         return userService.addFriend(userId, friendId);
     }
 
     @DeleteMapping("{userId}/friends/{friendId}")
-    public User deleteFriend(@PathVariable Integer userId, @PathVariable Integer friendId) {
+    public UserDto deleteFriend(@PathVariable Integer userId, @PathVariable Integer friendId) {
         return userService.deleteFriend(userId, friendId);
     }
 
     @GetMapping("/{userId}/friends")
-    public List<User> getFriendsList(@PathVariable Integer userId) {
+    public List<UserDto> getFriendsList(@PathVariable Integer userId) {
         return userService.getFriendsList(userId);
     }
 
     @GetMapping("{userId}/friends/common/{otherUserId}")
-    public List<User> getCommonFriendListWithOtherUser(
+    public List<UserDto> getCommonFriendListWithOtherUser(
             @PathVariable Integer userId, @PathVariable Integer otherUserId) {
         return userService.getCommonFriendListWithOtherUser(userId, otherUserId);
     }

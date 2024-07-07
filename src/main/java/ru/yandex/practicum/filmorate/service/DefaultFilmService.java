@@ -39,7 +39,7 @@ public class DefaultFilmService implements FilmService {
     @Override
     public Film userPostLikeToFilm(Integer filmId, Integer userId) {
         Film film = checkAndGetFilmById(filmId);
-        userService.checkAndGetUserById(userId);
+        userService.getById(userId);
         film = filmStorage.userPostLikeToFilm(film, userId);
         log.info("Users with id={} liked film with id={}", userId, filmId);
         return film;
@@ -48,7 +48,7 @@ public class DefaultFilmService implements FilmService {
     @Override
     public Film userDeleteLikeToFilm(Integer filmId, Integer userId) {
         Film film = checkAndGetFilmById(filmId);
-        userService.checkAndGetUserById(userId);
+        userService.getById(userId);
         film = filmStorage.userDeleteLikeToFilm(film, userId);
         log.info("Users with id={} unliked film with id={}", userId, filmId);
         return film;

@@ -25,4 +25,16 @@ public class UserUpdateRequest {
     private String name;
     @Past(groups = {Update.class}, message = "Дата рождения не может быть в будущем")
     private LocalDate birthday;
+
+    public boolean hasLogin() {
+        return ! (login == null || login.isBlank());
+    }
+
+    public boolean hasName() {
+        return ! (name == null || name.isBlank());
+    }
+
+    public boolean hasBirthday() {
+        return ! (birthday == null);
+    }
 }
