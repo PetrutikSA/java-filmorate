@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.dto.film.FilmCreateRequest;
 import ru.yandex.practicum.filmorate.dto.film.FilmDto;
 import ru.yandex.practicum.filmorate.dto.film.FilmUpdateRequest;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.model.enums.Rating;
 import ru.yandex.practicum.filmorate.model.validator.Create;
 import ru.yandex.practicum.filmorate.model.validator.Update;
 import ru.yandex.practicum.filmorate.service.DefaultFilmService;
@@ -21,7 +20,6 @@ import ru.yandex.practicum.filmorate.storage.inmemorry.InMemoryUserStorage;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class FilmControllerTests {
 
     private FilmController filmController;
+    private TestObjects testObjects;
     private FilmCreateRequest film;
     private FilmUpdateRequest updatedFilm;
     private final String notCorrectName = " ";
@@ -54,12 +53,11 @@ public class FilmControllerTests {
     void beforeEach() {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
+        testObjects = new TestObjects();
         filmController = new FilmController(new DefaultFilmService(new InMemoryFilmStorage(),
                 new DefaultUserService(new InMemoryUserStorage())));
-        film = new FilmCreateRequest("name1", "Description1",
-                LocalDate.of(2000, 10, 15), Duration.ofMinutes(120), new LinkedHashSet<>(), Rating.PG);
-        updatedFilm = new FilmUpdateRequest(1, "updatedName", "UpdatedDescription",
-                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new LinkedHashSet<>(), Rating.PG);
+        film = testObjects.film;
+        updatedFilm = testObjects.updatedFilm;
     }
 
     @Test
@@ -160,8 +158,7 @@ public class FilmControllerTests {
     @Test
     void correctReturnAllFilms() {
         filmController.addFilm(film);
-        FilmCreateRequest film2 = new FilmCreateRequest("name2", "description2",
-                LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new LinkedHashSet<>(), Rating.PG);
+        FilmCreateRequest film2 = testObjects.film2;
         filmController.addFilm(film2);
         List<FilmDto> filmList = filmController.getAllFilms();
         assertEquals(2, filmList.size(), returnFilmsListNotCorrectSize);
