@@ -28,6 +28,7 @@ public class UserControllerTests {
     private UserController userController;
     private UserCreateRequest user;
     private UserUpdateRequest updatedUser;
+    private TestObjects testObjects;
 
     private final String emptyEmail = " ";
     private final String notCorrectEmail = "notCorrectEmail";
@@ -50,11 +51,11 @@ public class UserControllerTests {
     @BeforeEach
     void beforeEach() {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+        testObjects = new TestObjects();
         validator = validatorFactory.getValidator();
         userController = new UserController(new DefaultUserService(new InMemoryUserStorage()));
-        user = new UserCreateRequest("name@mail.ru", "login", "name", LocalDate.of(2000, 10, 15));
-        updatedUser = new UserUpdateRequest(1, "organization@mail.ru", "newLogin", "Surname",
-                LocalDate.of(1989, 7, 27));
+        user = testObjects.user;
+        updatedUser = testObjects.updatedUser;
     }
 
     @Test
@@ -173,8 +174,7 @@ public class UserControllerTests {
     @Test
     void correctReturnAllUsers() {
         userController.createUser(user);
-        UserCreateRequest user2 = new UserCreateRequest("organization@mail.ru", "newLogin", "Surname",
-                LocalDate.of(1989, 7, 27));
+        UserCreateRequest user2 = testObjects.user2;
         userController.createUser(user2);
         List<UserDto> userList = userController.getAllUsers();
         assertEquals(2, userList.size(), returnUserListNotCorrectSize);
