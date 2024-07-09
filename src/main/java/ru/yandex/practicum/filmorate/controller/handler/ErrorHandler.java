@@ -19,21 +19,22 @@ public class ErrorHandler {
     @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(Exception exception) {
-        log.warn("Validation exception: {}", exception.getMessage());
+        log.warn("Validation exception: {}", exception.getMessage(), exception);
         return new ErrorResponse(exception.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleFilmNotFoundException(NotFoundException exception) {
-        log.warn("Requested non existed {} with id={}", exception.getEntity().getName(), exception.getEntityId());
+        log.warn("Requested non existed {} with id={}", exception.getEntity().getName(),
+                exception.getEntityId(), exception);
         return new ErrorResponse(String.format("Фильма с ID=%d не зарегистрировано", exception.getEntityId()));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleNotCorrectGenreException(BadRequestException exception) {
-        log.warn("Not correct {} got from client", exception.getEntity().getName());
+        log.warn("Not correct {} got from client", exception.getEntity().getName(), exception);
         return new ErrorResponse(String.format(exception.getMessage()));
     }
 
@@ -42,7 +43,7 @@ public class ErrorHandler {
             HttpMessageNotReadableException exception) {
         Throwable cause = exception.getCause().getCause();
         if (cause instanceof BadRequestException) {
-            log.warn("Not correct {} got from client", ((BadRequestException) cause).getEntity().getName());
+            log.warn("Not correct {} got from client", ((BadRequestException) cause).getEntity().getName(), exception);
             ErrorResponse errorResponse = new ErrorResponse(cause.getMessage());
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }  else {
