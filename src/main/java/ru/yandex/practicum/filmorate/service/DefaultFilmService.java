@@ -87,15 +87,16 @@ public class DefaultFilmService implements FilmService {
 
     @Override
     public List<Genre> getGenres() {
-        return List.of(Genre.values());
+        return filmStorage.getGenres();
     }
 
     @Override
     public Genre getGenreById(Integer genreId) {
-        if (genreId < 1 || genreId > Genre.values().length) {
+        Genre genre = filmStorage.getGenreById(genreId);
+        if (genre == null) {
             throw new NotFoundException(genreId, Genre.class);
         }
-        return Genre.forValues(genreId);
+        return genre;
     }
 
     @Override

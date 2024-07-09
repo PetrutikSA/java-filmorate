@@ -5,12 +5,17 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exception.BadRequestException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.enums.Genre;
+import ru.yandex.practicum.filmorate.model.enums.Rating;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.dal.mapper.GenreExtractor;
+import ru.yandex.practicum.filmorate.storage.dal.mapper.GenreMapper;
 import ru.yandex.practicum.filmorate.storage.dal.mapper.LikesExtractor;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -21,22 +26,31 @@ import java.util.Set;
 public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
     private final GenreExtractor genreExtractor;
     private final LikesExtractor likesExtractor;
+    private final GenreMapper genreMapper;
 
     public FilmDbStorage(JdbcTemplate jdbc, RowMapper<Film> mapper) {
         super(jdbc, mapper);
         genreExtractor = new GenreExtractor();
         likesExtractor = new LikesExtractor();
+        genreMapper = new GenreMapper();
     }
 
     private static final String FIND_ALL_QUERY = "SELECT * FROM films";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM films WHERE film_id = ?";
-    private static final String FIND_ALL_GENRES_QUERY = "SELECT film_id, genre_id FROM films_genres";
-    private static final String FIND_BY_FILM_ID_GENRES_QUERY = "SELECT film_id, genre_id " +
-            "FROM films_genres WHERE film_id = ?";
+    private static final String FIND_ALL_FILMS_ALL_GENRES_QUERY = "SELECT fg.film_id AS film_id, " +
+            "fg.genre_id AS genre_id,  " +
+            "g.name AS genre_name,  " +
+            "FROM films_genres AS fg " +
+            "LEFT JOIN genres AS g ON g.genre_id = fg.genre_id";
+    private static final String FIND_BY_FILM_ID_GENRES_QUERY = "SELECT fg.film_id AS film_id, " +
+            "fg.genre_id AS genre_id,  " +
+            "g.name AS genre_name,  " +
+            "FROM films_genres AS fg " +
+            "LEFT JOIN genres AS g ON g.genre_id = fg.genre_id " +
+            "WHERE fg.film_id = ? ";
     private static final String FIND_ALL_LIKES_QUERY = "SELECT film_id, user_id FROM films_likes";
     private static final String FIND_BY_FILM_ID_LIKES_QUERY = "SELECT film_id, user_id " +
             "FROM films_likes WHERE film_id = ?";
-
     private static final String INSERT_QUERY = "INSERT INTO films " +
             "(name, description, release_date, duration, rating_id) VALUES (?, ?, ?, ?, ?)";
     private static final String UPDATE_QUERY = "UPDATE films " +
@@ -47,6 +61,8 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
     private static final String INSERT_FILM_LIKE_QUERY = "INSERT INTO films_likes " +
             "(film_id, user_id) VALUES (?, ?)";
     private static final String DELETE_FILM_LIKE_QUERY = "DELETE FROM films_likes WHERE film_id = ? AND user_id = ?";
+    private static final String FIND_ALL_GENRES = "SELECT * FROM genres";
+    private static final String FIND_GENRE_BY_GENRE_ID = "SELECT * FROM genres WHERE genre_id = ?";
 
     @Override
     public Film getFilmById(Integer id) {
@@ -68,7 +84,7 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
 
     @Override
     public List<Film> getAllFilms() {
-        Map<Integer, LinkedHashSet<Genre>> genresMap = jdbc.query(FIND_ALL_GENRES_QUERY, genreExtractor);
+        Map<Integer, LinkedHashSet<Genre>> genresMap = jdbc.query(FIND_ALL_FILMS_ALL_GENRES_QUERY, genreExtractor);
         Map<Integer, Set<Integer>> likesMap = jdbc.query(FIND_ALL_LIKES_QUERY, likesExtractor);
 
         List<Film> films = jdbc.query(FIND_ALL_QUERY, mapper);
@@ -92,6 +108,7 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) {
+        checkGenreID(film.getGenres());
         Integer id = insert(INSERT_QUERY,
                 film.getName(),
                 film.getDescription(),
@@ -110,6 +127,7 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
     @Override
     public Film updateFilm(Film film) {
         Integer id = film.getId();
+        checkGenreID(film.getGenres());
         update(UPDATE_QUERY,
                 film.getName(),
                 film.getDescription(),
@@ -138,5 +156,40 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
         update(DELETE_FILM_LIKE_QUERY, film.getId(), userId);
         film.getUsersIdPostedLikes().remove(userId);
         return film;
+    }
+
+    @Override
+    public List<Genre> getGenres() {
+        return jdbc.query(FIND_ALL_GENRES, genreMapper);
+    }
+
+    @Override
+    public Genre getGenreById(Integer genreId) {
+        try {
+            return jdbc.queryForObject(FIND_GENRE_BY_GENRE_ID, genreMapper, genreId);
+        } catch (EmptyResultDataAccessException ignored) {
+            throw new NotFoundException(genreId, Genre.class);
+        }
+    }
+
+    @Override
+    public List<Rating> getRatings() {
+        return null;
+    }
+
+    @Override
+    public Rating getRatingById(Integer ratingId) {
+        return null;
+    }
+
+    private void checkGenreID(Set<Genre> genres) {
+        if (genres != null && !genres.isEmpty()) {
+            Set<Genre> genresToCheck = new HashSet<>(genres);
+            List<Genre> genresInDB = getGenres();
+            genresInDB.forEach(genresToCheck::remove);
+            if (!genresToCheck.isEmpty()) {
+                throw new BadRequestException(Genre.class);
+            }
+        }
     }
 }

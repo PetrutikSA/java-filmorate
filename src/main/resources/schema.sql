@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS rating (
 );
 
 CREATE TABLE IF NOT EXISTS genres (
-    genres_id INT PRIMARY KEY,
+    genre_id INT PRIMARY KEY,
     name VARCHAR(256) NOT NULL
 );
 
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS films (
 CREATE TABLE IF NOT EXISTS films_genres (
     films_genres INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     film_id INT REFERENCES films(film_id) ON DELETE CASCADE,
-    genre_id INT REFERENCES genres(genres_id) ON DELETE NO ACTION
+    genre_id INT REFERENCES genres(genre_id) ON DELETE NO ACTION
 );
 
 CREATE TABLE IF NOT EXISTS films_likes (

@@ -20,7 +20,8 @@ public class GenreExtractor implements ResultSetExtractor<Map<Integer, LinkedHas
             Integer filmId = rs.getInt("film_id");
             data.putIfAbsent(filmId, new LinkedHashSet<>());
             Integer genreId = rs.getInt("genre_id");
-            data.get(filmId).add(Genre.forValues(genreId));
+            String genreName = rs.getString("genre_name");
+            data.get(filmId).add(new Genre(genreId, genreName));
         }
         return data;
     }
