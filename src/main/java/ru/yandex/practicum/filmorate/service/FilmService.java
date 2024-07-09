@@ -3,8 +3,8 @@ package ru.yandex.practicum.filmorate.service;
 import ru.yandex.practicum.filmorate.dto.film.FilmCreateRequest;
 import ru.yandex.practicum.filmorate.dto.film.FilmDto;
 import ru.yandex.practicum.filmorate.dto.film.FilmUpdateRequest;
-import ru.yandex.practicum.filmorate.model.enums.Genre;
-import ru.yandex.practicum.filmorate.model.enums.Rating;
+import ru.yandex.practicum.filmorate.dto.film.GenreDto;
+import ru.yandex.practicum.filmorate.dto.film.RatingDto;
 
 import java.util.List;
 
@@ -23,11 +23,11 @@ public interface FilmService {
 
     FilmDto getFilmById(Integer filmId);
 
-    List<Genre> getGenres();
+    List<GenreDto> getGenres();
 
-    Genre getGenreById(Integer genreId);
+    GenreDto getGenreById(Integer genreId);
 
-    List<Rating> getRatings();
+    List<RatingDto> getRatings();
 
-    Rating getRatingById(Integer ratingId);
+    RatingDto getRatingById(Integer ratingId);
 }

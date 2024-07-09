@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.dto.film.FilmUpdateRequest;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 @UtilityClass
 public final class FilmMapper {
@@ -16,8 +17,9 @@ public final class FilmMapper {
                 .description(filmCreateRequest.getDescription())
                 .releaseDate(filmCreateRequest.getReleaseDate())
                 .duration(filmCreateRequest.getDuration())
-                .genres(filmCreateRequest.getGenres())
-                .mpa(filmCreateRequest.getMpa())
+                .genres(new LinkedHashSet<>(filmCreateRequest.getGenres().stream()
+                        .map(GenreMapper::genreDtoToGenre).toList()))
+                .mpa(RatingMapper.ratingDtoToRating(filmCreateRequest.getMpa()))
                 .build();
         film.setUsersIdPostedLikes(new HashSet<>());
         return film;
@@ -36,10 +38,11 @@ public final class FilmMapper {
             film.setDuration(filmUpdateRequest.getDuration());
         }
         if (filmUpdateRequest.hasGenres()) {
-            film.setGenres(filmUpdateRequest.getGenres());
+            film.setGenres(new LinkedHashSet<>(filmUpdateRequest.getGenres().stream()
+                    .map(GenreMapper::genreDtoToGenre).toList()));
         }
         if (filmUpdateRequest.hasRating()) {
-            film.setMpa(filmUpdateRequest.getMpa());
+            film.setMpa(RatingMapper.ratingDtoToRating(filmUpdateRequest.getMpa()));
         }
         return film;
     }
@@ -51,8 +54,9 @@ public final class FilmMapper {
                 .description(film.getDescription())
                 .releaseDate(film.getReleaseDate())
                 .duration(film.getDuration())
-                .genres(film.getGenres())
-                .mpa(film.getMpa())
+                .genres(new LinkedHashSet<>(film.getGenres().stream()
+                        .map(GenreMapper::genreToGenreDto).toList()))
+                .mpa(RatingMapper.ratingToRatingDto(film.getMpa()))
                 .usersIdPostedLikes(film.getUsersIdPostedLikes())
                 .build();
     }

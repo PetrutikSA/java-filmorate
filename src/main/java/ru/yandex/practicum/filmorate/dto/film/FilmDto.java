@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.model.adapter.JsonDurationDeserializer;
 import ru.yandex.practicum.filmorate.model.adapter.JsonDurationSerializer;
-import ru.yandex.practicum.filmorate.model.enums.Genre;
-import ru.yandex.practicum.filmorate.model.enums.Rating;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -25,6 +23,6 @@ public class FilmDto {
     @JsonDeserialize(using = JsonDurationDeserializer.class)
     private Duration duration;
     private Set<Integer> usersIdPostedLikes;
-    private LinkedHashSet<Genre> genres;
-    private Rating mpa;
+    private LinkedHashSet<GenreDto> genres;
+    private RatingDto mpa;
 }

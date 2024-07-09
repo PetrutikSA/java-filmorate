@@ -3,14 +3,18 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dto.film.GenreDto;
+import ru.yandex.practicum.filmorate.dto.film.RatingDto;
 import ru.yandex.practicum.filmorate.dto.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.dto.film.FilmCreateRequest;
 import ru.yandex.practicum.filmorate.dto.film.FilmDto;
 import ru.yandex.practicum.filmorate.dto.film.FilmUpdateRequest;
+import ru.yandex.practicum.filmorate.dto.mapper.GenreMapper;
+import ru.yandex.practicum.filmorate.dto.mapper.RatingMapper;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.enums.Genre;
-import ru.yandex.practicum.filmorate.model.enums.Rating;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.HashSet;
@@ -86,30 +90,34 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public List<Genre> getGenres() {
-        return filmStorage.getGenres();
+    public List<GenreDto> getGenres() {
+        return filmStorage.getGenres().stream()
+                .map(GenreMapper::genreToGenreDto)
+                .toList();
     }
 
     @Override
-    public Genre getGenreById(Integer genreId) {
+    public GenreDto getGenreById(Integer genreId) {
         Genre genre = filmStorage.getGenreById(genreId);
         if (genre == null) {
             throw new NotFoundException(genreId, Genre.class);
         }
-        return genre;
+        return GenreMapper.genreToGenreDto(genre);
     }
 
     @Override
-    public List<Rating> getRatings() {
-        return filmStorage.getRatings();
+    public List<RatingDto> getRatings() {
+        return filmStorage.getRatings().stream()
+                .map(RatingMapper::ratingToRatingDto)
+                .toList();
     }
 
     @Override
-    public Rating getRatingById(Integer ratingId) {
+    public RatingDto getRatingById(Integer ratingId) {
         Rating rating = filmStorage.getRatingById(ratingId);
         if (rating == null) {
             throw new NotFoundException(ratingId, Rating.class);
         }
-        return rating;
+        return RatingMapper.ratingToRatingDto(rating);
     }
 }

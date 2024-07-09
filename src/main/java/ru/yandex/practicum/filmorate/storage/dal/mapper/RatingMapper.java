@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.dal.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
-import ru.yandex.practicum.filmorate.model.enums.Rating;
+import ru.yandex.practicum.filmorate.model.Rating;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
