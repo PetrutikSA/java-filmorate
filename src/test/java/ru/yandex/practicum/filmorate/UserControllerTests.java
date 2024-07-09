@@ -11,8 +11,6 @@ import ru.yandex.practicum.filmorate.dto.user.UserCreateRequest;
 import ru.yandex.practicum.filmorate.dto.user.UserDto;
 import ru.yandex.practicum.filmorate.dto.user.UserUpdateRequest;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
-import ru.yandex.practicum.filmorate.model.validator.Create;
-import ru.yandex.practicum.filmorate.model.validator.Update;
 import ru.yandex.practicum.filmorate.service.DefaultUserService;
 import ru.yandex.practicum.filmorate.storage.inmemorry.InMemoryUserStorage;
 
@@ -76,28 +74,28 @@ public class UserControllerTests {
     @Test
     void createEmptyEmailUserProvideError() {
         user.setEmail(emptyEmail);
-        Set<ConstraintViolation<UserCreateRequest>> violations = validator.validate(user, Create.class);
+        Set<ConstraintViolation<UserCreateRequest>> violations = validator.validate(user);
         assertFalse(violations.isEmpty(), emptyEmailValidationViolation);
     }
 
     @Test
     void createNotCorrectEmailUserProvideError() {
         user.setEmail(notCorrectEmail);
-        Set<ConstraintViolation<UserCreateRequest>> violations = validator.validate(user, Create.class);
+        Set<ConstraintViolation<UserCreateRequest>> violations = validator.validate(user);
         assertFalse(violations.isEmpty(), notCorrectEmailValidationViolation);
     }
 
     @Test
     void createEmptyLoginUserProvideError() {
         user.setLogin(emptyLogin);
-        Set<ConstraintViolation<UserCreateRequest>> violations = validator.validate(user, Create.class);
+        Set<ConstraintViolation<UserCreateRequest>> violations = validator.validate(user);
         assertFalse(violations.isEmpty(), emptyLoginValidationViolation);
     }
 
     @Test
     void createNotCorrectLoginUserProvideError() {
         user.setLogin(notCorrectLogin);
-        Set<ConstraintViolation<UserCreateRequest>> violations = validator.validate(user, Create.class);
+        Set<ConstraintViolation<UserCreateRequest>> violations = validator.validate(user);
         assertFalse(violations.isEmpty(), notCorrectLoginValidationViolation);
     }
 
@@ -114,7 +112,7 @@ public class UserControllerTests {
     @Test
     void createNotCorrectBirthdayUserProvideError() {
         user.setBirthday(notCorrectBirthday);
-        Set<ConstraintViolation<UserCreateRequest>> violations = validator.validate(user, Create.class);
+        Set<ConstraintViolation<UserCreateRequest>> violations = validator.validate(user);
         assertFalse(violations.isEmpty(), birthdayValidationViolation);
     }
 
@@ -139,35 +137,35 @@ public class UserControllerTests {
     @Test
     void updateEmptyEmailUserProvideError() {
         updatedUser.setEmail(emptyEmail);
-        Set<ConstraintViolation<UserUpdateRequest>> violations = validator.validate(updatedUser, Update.class);
+        Set<ConstraintViolation<UserUpdateRequest>> violations = validator.validate(updatedUser);
         assertFalse(violations.isEmpty(), emptyEmailValidationViolation);
     }
 
     @Test
     void updateNotCorrectEmailUserProvideError() {
         updatedUser.setEmail(notCorrectEmail);
-        Set<ConstraintViolation<UserUpdateRequest>> violations = validator.validate(updatedUser, Update.class);
+        Set<ConstraintViolation<UserUpdateRequest>> violations = validator.validate(updatedUser);
         assertFalse(violations.isEmpty(), notCorrectEmailValidationViolation);
     }
 
     @Test
     void updateEmptyLoginUserProvideError() {
         updatedUser.setLogin(emptyLogin);
-        Set<ConstraintViolation<UserUpdateRequest>> violations = validator.validate(updatedUser, Update.class);
+        Set<ConstraintViolation<UserUpdateRequest>> violations = validator.validate(updatedUser);
         assertFalse(violations.isEmpty(), emptyLoginValidationViolation);
     }
 
     @Test
     void updateNotCorrectLoginUserProvideError() {
         updatedUser.setLogin(notCorrectLogin);
-        Set<ConstraintViolation<UserUpdateRequest>> violations = validator.validate(updatedUser, Update.class);
+        Set<ConstraintViolation<UserUpdateRequest>> violations = validator.validate(updatedUser);
         assertFalse(violations.isEmpty(), notCorrectLoginValidationViolation);
     }
 
     @Test
     void updateNotCorrectBirthdayUserProvideError() {
         updatedUser.setBirthday(notCorrectBirthday);
-        Set<ConstraintViolation<UserUpdateRequest>> violations = validator.validate(updatedUser, Update.class);
+        Set<ConstraintViolation<UserUpdateRequest>> violations = validator.validate(updatedUser);
         assertFalse(violations.isEmpty(), birthdayValidationViolation);
     }
 

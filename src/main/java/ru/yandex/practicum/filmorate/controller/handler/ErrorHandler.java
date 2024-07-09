@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller.handler;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +20,9 @@ import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 @Slf4j
 public class ErrorHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidationException(MethodArgumentNotValidException exception) {
+    public ErrorResponse handleValidationException(Exception exception) {
         log.warn("Validation exception: {}", exception.getMessage());
         return new ErrorResponse(exception.getMessage());
     }

@@ -9,26 +9,24 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.yandex.practicum.filmorate.model.validator.Update;
 
 import java.time.LocalDate;
 
 @Data
-
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserUpdateRequest {
-    @Min(value = 1, groups = {Update.class}, message = "ID долно быть положжительным числом")
+    @Min(value = 1, message = "ID долно быть положжительным числом")
     @NotNull
     private Integer id;
-    @Email(groups = {Update.class}, message = "Введен некорректный e-mail")
-    @NotBlank(groups = {Update.class}, message = "E-mail не может быть пустым")
+    @Email(message = "Введен некорректный e-mail")
+    @NotBlank(message = "E-mail не может быть пустым")
     private String email;
-    @NotBlank(groups = {Update.class}, message = "Логин не может быть пустым")
-    @Pattern(regexp = "^\\S+$", groups = {Update.class}, message = "Логин не может содержать пробелы")
+    @NotBlank(message = "Логин не может быть пустым")
+    @Pattern(regexp = "^\\S+$", message = "Логин не может содержать пробелы")
     private String login;
     private String name;
-    @Past(groups = {Update.class}, message = "Дата рождения не может быть в будущем")
+    @Past(message = "Дата рождения не может быть в будущем")
     private LocalDate birthday;
 
     public boolean hasLogin() {

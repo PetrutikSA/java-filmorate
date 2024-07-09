@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.yandex.practicum.filmorate.model.validator.Create;
 
 import java.time.LocalDate;
 
@@ -15,13 +14,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserCreateRequest {
-    @Email(groups = {Create.class}, message = "Введен некорректный e-mail")
-    @NotBlank(groups = {Create.class}, message = "E-mail не может быть пустым")
+    @Email(message = "Введен некорректный e-mail")
+    @NotBlank(message = "E-mail не может быть пустым")
     private String email;
-    @NotBlank(groups = {Create.class}, message = "Логин не может быть пустым")
-    @Pattern(regexp = "^\\S+$", groups = {Create.class}, message = "Логин не может содержать пробелы")
+    @NotBlank(message = "Логин не может быть пустым")
+    @Pattern(regexp = "^\\S+$", message = "Логин не может содержать пробелы")
     private String login;
     private String name;
-    @Past(groups = {Create.class}, message = "Дата рождения не может быть в будущем")
+    @Past(message = "Дата рождения не может быть в будущем")
     private LocalDate birthday;
 }

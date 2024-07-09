@@ -11,8 +11,6 @@ import ru.yandex.practicum.filmorate.dto.film.FilmCreateRequest;
 import ru.yandex.practicum.filmorate.dto.film.FilmDto;
 import ru.yandex.practicum.filmorate.dto.film.FilmUpdateRequest;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.model.validator.Create;
-import ru.yandex.practicum.filmorate.model.validator.Update;
 import ru.yandex.practicum.filmorate.service.DefaultFilmService;
 import ru.yandex.practicum.filmorate.service.DefaultUserService;
 import ru.yandex.practicum.filmorate.storage.inmemorry.InMemoryFilmStorage;
@@ -80,28 +78,28 @@ public class FilmControllerTests {
     @Test
     void createdEmptyNameFilmValidationsProvideError() {
         film.setName(notCorrectName);
-        Set<ConstraintViolation<FilmCreateRequest>> violations = validator.validate(film, Create.class);
+        Set<ConstraintViolation<FilmCreateRequest>> violations = validator.validate(film);
         assertFalse(violations.isEmpty(), emptyNameValidationViolation);
     }
 
     @Test
     void createFilmDescriptionLengthMore200ProvideError() {
         film.setDescription(notCorrectDescription);
-        Set<ConstraintViolation<FilmCreateRequest>> violations = validator.validate(film, Create.class);
+        Set<ConstraintViolation<FilmCreateRequest>> violations = validator.validate(film);
         assertFalse(violations.isEmpty(), descriptionSizeValidationViolation);
     }
 
     @Test
     void createFilmRealiseDateEarlierDateOfFirstFilmProvideError() {
         film.setReleaseDate(notCorrectReleaseDate);
-        Set<ConstraintViolation<FilmCreateRequest>> violations = validator.validate(film, Create.class);
+        Set<ConstraintViolation<FilmCreateRequest>> violations = validator.validate(film);
         assertFalse(violations.isEmpty(), releaseDateBorderValidationViolation);
     }
 
     @Test
     void createFilmDurationNegativeValueProvideError() {
         film.setDuration(notCorrectDuration);
-        Set<ConstraintViolation<FilmCreateRequest>> violations = validator.validate(film, Create.class);
+        Set<ConstraintViolation<FilmCreateRequest>> violations = validator.validate(film);
         assertFalse(violations.isEmpty(), negativeDurationValidationViolation);
     }
 
@@ -127,7 +125,7 @@ public class FilmControllerTests {
     void updateEmptyNameFilmProvideError() {
         filmController.addFilm(film);
         updatedFilm.setName(notCorrectName);
-        Set<ConstraintViolation<FilmUpdateRequest>> violations = validator.validate(updatedFilm, Update.class);
+        Set<ConstraintViolation<FilmUpdateRequest>> violations = validator.validate(updatedFilm);
         assertFalse(violations.isEmpty(), emptyNameValidationViolation);
     }
 
@@ -135,7 +133,7 @@ public class FilmControllerTests {
     void updateFilmDescriptionLengthMore200ProvideError() {
         filmController.addFilm(film);
         updatedFilm.setDescription(notCorrectDescription);
-        Set<ConstraintViolation<FilmUpdateRequest>> violations = validator.validate(updatedFilm, Update.class);
+        Set<ConstraintViolation<FilmUpdateRequest>> violations = validator.validate(updatedFilm);
         assertFalse(violations.isEmpty(), descriptionSizeValidationViolation);
     }
 
@@ -143,7 +141,7 @@ public class FilmControllerTests {
     void updateFilmRealiseDateEarlierDateOfFirstFilmProvideError() {
         filmController.addFilm(film);
         updatedFilm.setReleaseDate(notCorrectReleaseDate);
-        Set<ConstraintViolation<FilmUpdateRequest>> violations = validator.validate(updatedFilm, Update.class);
+        Set<ConstraintViolation<FilmUpdateRequest>> violations = validator.validate(updatedFilm);
         assertFalse(violations.isEmpty(), releaseDateBorderValidationViolation);
     }
 
@@ -151,7 +149,7 @@ public class FilmControllerTests {
     void updateFilmDurationNegativeValueProvideError() {
         filmController.addFilm(film);
         updatedFilm.setDuration(notCorrectDuration);
-        Set<ConstraintViolation<FilmUpdateRequest>> violations = validator.validate(updatedFilm, Update.class);
+        Set<ConstraintViolation<FilmUpdateRequest>> violations = validator.validate(updatedFilm);
         assertFalse(violations.isEmpty(), negativeDurationValidationViolation);
     }
 
