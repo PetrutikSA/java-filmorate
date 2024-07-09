@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.dto.mapper;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import ru.yandex.practicum.filmorate.dto.film.FilmCreateRequest;
 import ru.yandex.practicum.filmorate.dto.film.FilmDto;
 import ru.yandex.practicum.filmorate.dto.film.FilmUpdateRequest;
@@ -9,9 +8,9 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.HashSet;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class FilmMapper {
-    public static Film filmCreatedRequestToFilm(FilmCreateRequest filmCreateRequest) {
+    public Film filmCreatedRequestToFilm(FilmCreateRequest filmCreateRequest) {
         Film film = Film.builder()
                 .name(filmCreateRequest.getName())
                 .description(filmCreateRequest.getDescription())
@@ -24,7 +23,7 @@ public final class FilmMapper {
         return film;
     }
 
-    public static Film updateFilmFields(Film film, FilmUpdateRequest filmUpdateRequest) {
+    public Film updateFilmFields(Film film, FilmUpdateRequest filmUpdateRequest) {
         film.setName(filmUpdateRequest.getName());
 
         if (filmUpdateRequest.hasDescription()) {
@@ -45,7 +44,7 @@ public final class FilmMapper {
         return film;
     }
 
-    public static FilmDto filmToFilmDto(Film film) {
+    public FilmDto filmToFilmDto(Film film) {
         return FilmDto.builder()
                 .id(film.getId())
                 .name(film.getName())
