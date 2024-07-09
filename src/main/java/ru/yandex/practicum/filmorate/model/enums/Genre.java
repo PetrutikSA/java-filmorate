@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import ru.yandex.practicum.filmorate.exception.NotCorrectGenreException;
+import ru.yandex.practicum.filmorate.exception.BadRequestException;
 
 import java.util.Objects;
 
@@ -32,6 +32,6 @@ public enum Genre {
                 return genre;
             }
         }
-        throw new NotCorrectGenreException();
+        throw new BadRequestException(Genre.class);
     }
 }

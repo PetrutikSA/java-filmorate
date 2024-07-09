@@ -10,7 +10,7 @@ import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.dto.film.FilmCreateRequest;
 import ru.yandex.practicum.filmorate.dto.film.FilmDto;
 import ru.yandex.practicum.filmorate.dto.film.FilmUpdateRequest;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.service.DefaultFilmService;
 import ru.yandex.practicum.filmorate.service.DefaultUserService;
 import ru.yandex.practicum.filmorate.storage.inmemorry.InMemoryFilmStorage;
@@ -107,7 +107,7 @@ public class FilmControllerTests {
     void updateFilmWithoutIdThrowsException() {
         filmController.addFilm(film);
         updatedFilm.setId(null);
-        assertThrows(FilmNotFoundException.class, () -> filmController.updateFilm(updatedFilm),
+        assertThrows(NotFoundException.class, () -> filmController.updateFilm(updatedFilm),
                 "Обновление фильма без ID должно приводить к ошибке");
     }
 

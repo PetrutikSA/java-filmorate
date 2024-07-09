@@ -7,9 +7,7 @@ import ru.yandex.practicum.filmorate.dto.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.dto.film.FilmCreateRequest;
 import ru.yandex.practicum.filmorate.dto.film.FilmDto;
 import ru.yandex.practicum.filmorate.dto.film.FilmUpdateRequest;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
-import ru.yandex.practicum.filmorate.exception.RatingNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.enums.Genre;
 import ru.yandex.practicum.filmorate.model.enums.Rating;
@@ -77,7 +75,7 @@ public class DefaultFilmService implements FilmService {
     private Film checkAndGetFilmById(Integer id) {
         Film film = filmStorage.getFilmById(id);
         if (film == null) {
-            throw new FilmNotFoundException(id);
+            throw new NotFoundException(id, Film.class);
         } else return film;
     }
 
@@ -95,7 +93,7 @@ public class DefaultFilmService implements FilmService {
     @Override
     public Genre getGenreById(Integer genreId) {
         if (genreId < 1 || genreId > Genre.values().length) {
-            throw new GenreNotFoundException(genreId);
+            throw new NotFoundException(genreId, Genre.class);
         }
         return Genre.forValues(genreId);
     }
@@ -108,7 +106,7 @@ public class DefaultFilmService implements FilmService {
     @Override
     public Rating getRatingById(Integer ratingId) {
         if (ratingId < 1 || ratingId > Rating.values().length) {
-            throw new RatingNotFoundException(ratingId);
+            throw new NotFoundException(ratingId, Rating.class);
         }
         return Rating.forValues(ratingId);
     }

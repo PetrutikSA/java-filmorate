@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import ru.yandex.practicum.filmorate.exception.NotCorrectRatingException;
+import ru.yandex.practicum.filmorate.exception.BadRequestException;
 
 @RequiredArgsConstructor
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
@@ -31,6 +31,6 @@ public enum Rating {
                 return rating;
             }
         }
-        throw new NotCorrectRatingException();
+        throw new BadRequestException(Rating.class);
     }
 }

@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.dto.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.dto.user.UserCreateRequest;
 import ru.yandex.practicum.filmorate.dto.user.UserDto;
 import ru.yandex.practicum.filmorate.dto.user.UserUpdateRequest;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.enums.FriendshipStatus;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -128,7 +128,7 @@ public class DefaultUserService implements UserService {
     private User checkAndGetUserById(Integer id) {
         User user = userStorage.getUserById(id);
         if (user == null) {
-            throw new UserNotFoundException(id);
+            throw new NotFoundException(id, User.class);
         } else return user;
     }
 }

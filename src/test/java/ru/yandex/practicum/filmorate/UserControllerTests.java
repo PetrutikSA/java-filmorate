@@ -10,7 +10,7 @@ import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.dto.user.UserCreateRequest;
 import ru.yandex.practicum.filmorate.dto.user.UserDto;
 import ru.yandex.practicum.filmorate.dto.user.UserUpdateRequest;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.service.DefaultUserService;
 import ru.yandex.practicum.filmorate.storage.inmemorry.InMemoryUserStorage;
 
@@ -120,7 +120,7 @@ public class UserControllerTests {
     void updateUserWithoutIdThrowsException() {
         userController.createUser(user);
         updatedUser.setId(null);
-        assertThrows(UserNotFoundException.class, () -> userController.updateUser(updatedUser),
+        assertThrows(NotFoundException.class, () -> userController.updateUser(updatedUser),
                 "Обновление пользователя без ID должно приводить к ошибке");
     }
 
