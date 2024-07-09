@@ -17,10 +17,10 @@ public class TestObjects {
     public UserCreateRequest user2 = new UserCreateRequest("organization@mail.ru", "newLogin", "Surname",
             LocalDate.of(1989, 7, 27));
     public FilmCreateRequest film = new FilmCreateRequest("name1", "Description1",
-            LocalDate.of(2000, 10, 15), Duration.ofMinutes(120), new LinkedHashSet<>(), Rating.PG);
+            LocalDate.of(2000, 10, 15), Duration.ofMinutes(120), new LinkedHashSet<>(), new Rating(2, "PG"));
     public FilmUpdateRequest updatedFilm = new FilmUpdateRequest(1, "updatedName", "UpdatedDescription",
-                                        LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new LinkedHashSet<>(), Rating.PG);
+                                        LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new LinkedHashSet<>(), new Rating(2, "PG"));
     public FilmCreateRequest film2 = new FilmCreateRequest("name2", "description2",
-            LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new LinkedHashSet<>(), Rating.PG);
+            LocalDate.of(2010, 1, 1), Duration.ofMinutes(180), new LinkedHashSet<>(), new Rating(2, "PG"));
 
 }

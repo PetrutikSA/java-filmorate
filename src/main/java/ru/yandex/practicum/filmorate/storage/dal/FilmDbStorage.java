@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.dal.mapper.GenreExtractor;
 import ru.yandex.practicum.filmorate.storage.dal.mapper.GenreMapper;
 import ru.yandex.practicum.filmorate.storage.dal.mapper.LikesExtractor;
+import ru.yandex.practicum.filmorate.storage.dal.mapper.RatingMapper;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -27,16 +28,33 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
     private final GenreExtractor genreExtractor;
     private final LikesExtractor likesExtractor;
     private final GenreMapper genreMapper;
+    private final RatingMapper ratingMapper;
 
     public FilmDbStorage(JdbcTemplate jdbc, RowMapper<Film> mapper) {
         super(jdbc, mapper);
         genreExtractor = new GenreExtractor();
         likesExtractor = new LikesExtractor();
         genreMapper = new GenreMapper();
+        ratingMapper = new RatingMapper();
     }
 
-    private static final String FIND_ALL_QUERY = "SELECT * FROM films";
-    private static final String FIND_BY_ID_QUERY = "SELECT * FROM films WHERE film_id = ?";
+    private static final String FIND_ALL_QUERY = "SELECT f.film_id AS film_id, " +
+            "f.name AS name, " +
+            "f.description AS description, " +
+            "f.release_date AS release_date, " +
+            "f.duration AS duration, " +
+            "f.rating_id AS rating_id, " +
+            "r.name AS rating_name " +
+            "FROM films AS f LEFT JOIN rating AS r ON r.rating_id = f.rating_id";
+    private static final String FIND_BY_ID_QUERY = "SELECT f.film_id AS film_id, " +
+            "f.name AS name, " +
+            "f.description AS description, " +
+            "f.release_date AS release_date, " +
+            "f.duration AS duration, " +
+            "f.rating_id AS rating_id, " +
+            "r.name AS rating_name " +
+            "FROM films AS f LEFT JOIN rating AS r ON r.rating_id = f.rating_id " +
+            "WHERE film_id = ?";
     private static final String FIND_ALL_FILMS_ALL_GENRES_QUERY = "SELECT fg.film_id AS film_id, " +
             "fg.genre_id AS genre_id,  " +
             "g.name AS genre_name,  " +
@@ -63,6 +81,8 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
     private static final String DELETE_FILM_LIKE_QUERY = "DELETE FROM films_likes WHERE film_id = ? AND user_id = ?";
     private static final String FIND_ALL_GENRES = "SELECT * FROM genres";
     private static final String FIND_GENRE_BY_GENRE_ID = "SELECT * FROM genres WHERE genre_id = ?";
+    private static final String FIND_ALL_RATINGS = "SELECT * FROM rating";
+    private static final String FIND_RATING_BY_RATING_ID = "SELECT * FROM rating WHERE rating_id = ?";
 
     @Override
     public Film getFilmById(Integer id) {
@@ -109,6 +129,7 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
     @Override
     public Film addFilm(Film film) {
         checkGenreID(film.getGenres());
+        checkRatingID(film.getMpa());
         Integer id = insert(INSERT_QUERY,
                 film.getName(),
                 film.getDescription(),
@@ -128,6 +149,7 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
     public Film updateFilm(Film film) {
         Integer id = film.getId();
         checkGenreID(film.getGenres());
+        checkRatingID(film.getMpa());
         update(UPDATE_QUERY,
                 film.getName(),
                 film.getDescription(),
@@ -174,12 +196,16 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
 
     @Override
     public List<Rating> getRatings() {
-        return null;
+        return jdbc.query(FIND_ALL_RATINGS, ratingMapper);
     }
 
     @Override
     public Rating getRatingById(Integer ratingId) {
-        return null;
+        try {
+            return jdbc.queryForObject(FIND_RATING_BY_RATING_ID, ratingMapper, ratingId);
+        } catch (EmptyResultDataAccessException ignored) {
+            throw new NotFoundException(ratingId, Rating.class);
+        }
     }
 
     private void checkGenreID(Set<Genre> genres) {
@@ -190,6 +216,19 @@ public class FilmDbStorage extends BaseDbStorage<Film> implements FilmStorage {
             if (!genresToCheck.isEmpty()) {
                 throw new BadRequestException(Genre.class);
             }
+        }
+    }
+
+    private void checkRatingID(Rating rating) {
+        if (rating != null) {
+            List<Rating> ratingsInDB = getRatings();
+            ;
+            for (Rating ratingDb : ratingsInDB) {
+                if (ratingDb.equals(rating)) {
+                    return;
+                }
+            }
+            throw new BadRequestException(Rating.class);
         }
     }
 }

@@ -101,14 +101,15 @@ public class DefaultFilmService implements FilmService {
 
     @Override
     public List<Rating> getRatings() {
-        return List.of(Rating.values());
+        return filmStorage.getRatings();
     }
 
     @Override
     public Rating getRatingById(Integer ratingId) {
-        if (ratingId < 1 || ratingId > Rating.values().length) {
+        Rating rating = filmStorage.getRatingById(ratingId);
+        if (rating == null) {
             throw new NotFoundException(ratingId, Rating.class);
         }
-        return Rating.forValues(ratingId);
+        return rating;
     }
 }
