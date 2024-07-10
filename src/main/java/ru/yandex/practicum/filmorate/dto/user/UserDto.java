@@ -1,9 +1,7 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.dto.user;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.model.enums.FriendshipStatus;
 
 import java.time.LocalDate;
@@ -11,9 +9,7 @@ import java.util.Map;
 
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class User {
+public class UserDto {
     private Integer id;
     private String email;
     private String login;
@@ -21,4 +17,3 @@ public class User {
     private LocalDate birthday;
     private Map<Integer, FriendshipStatus> friendsId;
 }
-

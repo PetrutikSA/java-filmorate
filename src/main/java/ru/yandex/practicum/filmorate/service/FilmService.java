@@ -1,21 +1,33 @@
 package ru.yandex.practicum.filmorate.service;
 
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.dto.film.FilmCreateRequest;
+import ru.yandex.practicum.filmorate.dto.film.FilmDto;
+import ru.yandex.practicum.filmorate.dto.film.FilmUpdateRequest;
+import ru.yandex.practicum.filmorate.dto.film.GenreDto;
+import ru.yandex.practicum.filmorate.dto.film.RatingDto;
 
 import java.util.List;
 
 public interface FilmService {
-    Film addFilm(Film film);
+    FilmDto addFilm(FilmCreateRequest film);
 
-    Film updateFilm(Film film);
+    FilmDto updateFilm(FilmUpdateRequest film);
 
-    List<Film> getAllFilms();
+    List<FilmDto> getAllFilms();
 
-    Film userPostLikeToFilm(Integer filmId, Integer userId);
+    FilmDto userPostLikeToFilm(Integer filmId, Integer userId);
 
-    Film userDeleteLikeToFilm(Integer filmId, Integer userId);
+    FilmDto userDeleteLikeToFilm(Integer filmId, Integer userId);
 
-    List<Film> getTopLikedFilms(Integer count);
+    List<FilmDto> getTopLikedFilms(Integer count);
 
-    Film checkAndGetFilmById(Integer id);
+    FilmDto getFilmById(Integer filmId);
+
+    List<GenreDto> getGenres();
+
+    GenreDto getGenreById(Integer genreId);
+
+    List<RatingDto> getRatings();
+
+    RatingDto getRatingById(Integer ratingId);
 }
