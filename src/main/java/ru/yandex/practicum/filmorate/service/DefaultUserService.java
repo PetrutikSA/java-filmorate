@@ -95,8 +95,8 @@ public class DefaultUserService implements UserService {
     @Override
     public List<UserDto> getFriendsList(Integer userId) { //return atso not approved friends
         User user = checkAndGetUserById(userId);
-        return user.getFriendsId().keySet().stream()
-                .map(this::checkAndGetUserById)
+        Set<Integer> friendsIds = user.getFriendsId().keySet();
+        return userStorage.getSomeUsers(friendsIds).stream()
                 .map(UserMapper::userToUserDto)
                 .toList();
     }
@@ -107,8 +107,7 @@ public class DefaultUserService implements UserService {
         User otherUser = checkAndGetUserById(otherUserId);
         Set<Integer> userFriendsList = user.getFriendsId().keySet();
         userFriendsList.retainAll(otherUser.getFriendsId().keySet());
-        return userFriendsList.stream()
-                .map(this::checkAndGetUserById)
+        return userStorage.getSomeUsers(userFriendsList).stream()
                 .map(UserMapper::userToUserDto)
                 .toList();
     }

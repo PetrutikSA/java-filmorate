@@ -4,6 +4,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.enums.FriendshipStatus;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserStorage {
     User createUser(User user);
@@ -17,4 +18,6 @@ public interface UserStorage {
     User deleteFriend(User user, Integer friendId, FriendshipStatus status);
 
     User addFriend(User user, Integer friendId, FriendshipStatus status);
+
+    List<User> getSomeUsers(Set<Integer> usersIds);
 }

@@ -11,9 +11,12 @@ import ru.yandex.practicum.filmorate.model.enums.FriendshipStatus;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.storage.dal.mapper.FriendsExtractor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Primary
@@ -79,6 +82,24 @@ public class UserDbStorage extends BaseDbStorage<User> implements UserStorage {
             "VALUES (?, ?)";
     private static final String INSERT_APPROVED_FRIEND_QUERY = "INSERT INTO approved_friends (user1_id, user2_id) " +
             "VALUES (?, ?)";
+    private static final String FIND_NUMBER_OF_IDS_QUERY = "SELECT * FROM users WHERE user_id IN (?)";
+    private static final String FIND_BY_NUMBER_OF_IDS_FRIENDS_QUERY = "SELECT user2_id AS user_id," +
+            "user1_id AS friend_id, " +
+            "'APPROVED' AS status " +
+            "FROM approved_friends " +
+            "WHERE user2_id IN (?) " +
+            "UNION " +
+            "SELECT user1_id  AS user_id, " +
+            "user2_id AS friend_id, " +
+            "'APPROVED' AS status " +
+            "FROM approved_friends " +
+            "WHERE user1_id IN (?) " +
+            "UNION " +
+            "SELECT user_id  AS user_id, " +
+            "friend_id AS friend_id, " +
+            "'REQUESTED' AS status " +
+            "FROM requested_friends " +
+            "WHERE user_id IN (?);";
 
     @Override
     public User createUser(User user) {
@@ -164,5 +185,30 @@ public class UserDbStorage extends BaseDbStorage<User> implements UserStorage {
         }
         user.getFriendsId().put(friendId, status);
         return user;
+    }
+
+    public List<User> getSomeUsers(Set<Integer> usersIds) {
+        List<User> users = new ArrayList<>();
+        if (usersIds != null && !usersIds.isEmpty()) {
+            String idsForQuery = usersIds.stream().map(String::valueOf)
+                    .collect(Collectors.joining(", "));
+
+            Map<Integer, Map<Integer, FriendshipStatus>> friendsMap =
+                    jdbc.query(FIND_BY_NUMBER_OF_IDS_FRIENDS_QUERY, extractor, idsForQuery, idsForQuery, idsForQuery);
+
+            users = jdbc.query(FIND_NUMBER_OF_IDS_QUERY, mapper, idsForQuery);
+
+            if (friendsMap != null && !friendsMap.isEmpty()) {
+                for (User user : users) {
+                    Integer userId = user.getId();
+                    if ((friendsMap.containsKey(userId))) {
+                        user.setFriendsId(friendsMap.get(userId));
+                    } else {
+                        user.setFriendsId(new HashMap<>());
+                    }
+                }
+            }
+        }
+        return users;
     }
 }

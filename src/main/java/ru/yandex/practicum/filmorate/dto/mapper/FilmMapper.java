@@ -17,10 +17,14 @@ public final class FilmMapper {
                 .description(filmCreateRequest.getDescription())
                 .releaseDate(filmCreateRequest.getReleaseDate())
                 .duration(filmCreateRequest.getDuration())
-                .genres(new LinkedHashSet<>(filmCreateRequest.getGenres().stream()
-                        .map(GenreMapper::genreDtoToGenre).toList()))
                 .mpa(RatingMapper.ratingDtoToRating(filmCreateRequest.getMpa()))
                 .build();
+        if (filmCreateRequest.getGenres() != null) {
+            film.setGenres(new LinkedHashSet<>(filmCreateRequest.getGenres().stream()
+                    .map(GenreMapper::genreDtoToGenre).toList()));
+        } else {
+            film.setGenres(new LinkedHashSet<>());
+        }
         film.setUsersIdPostedLikes(new HashSet<>());
         return film;
     }
